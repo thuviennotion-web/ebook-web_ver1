@@ -16,7 +16,7 @@ const MOCK_BOOKS = [
     id: 1,
     title: "CHIP WAR - Cuộc Chiến Vi Mạch",
     author: "Chris Miller",
-    category: "Kinh tế",
+    category: "Kinh tế", "Khoa học"
     rating: 4.4,
     reviews: 0,
     coverPrice: "300.000đ",
