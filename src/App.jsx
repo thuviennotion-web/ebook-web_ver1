@@ -5,8 +5,11 @@ import {
   Heart, Facebook
 } from 'lucide-react';
 
-// --- MOCK DATA ---
-const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi", "Kinh tế"];
+// --- CONSTANTS & MOCK DATA ---
+const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi"];
+
+// Ảnh dự phòng khi link ảnh bị lỗi (Nhúng trực tiếp Base64 để không phụ thuộc mạng ngoài)
+const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
 
 const MOCK_BOOKS = [
   {
@@ -24,10 +27,10 @@ const MOCK_BOOKS = [
     distributor: "Nhã Nam",
     pages: 480,
     epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", 
-    pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs", // Link dùng để tải về
-    pdfPreviewLink: "https://drive.google.com/open?id=1WLhzZP1O0UVNAHMGajyc9WKsLJSqHdvk&usp=drive_fs", // Link dùng cho bản xem trước (đọc thử)
+    pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs", 
+    pdfPreviewLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs", 
     shopeeLink: "https://s.shopee.vn/60L7wsDqsh", 
-    cover: "https://github.com/user-attachments/assets/0c2cd8a2-ada9-45dd-9315-ea7dbcf6e82f?q=80&w=800&auto=format&fit=crop",
+    cover: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
     synopsis: "Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
     content: "Ngày nay, sức mạnh quân sự, kinh tế và chính trị được xây dựng trên nền tảng chip máy tính. Hầu như mọi thứ đều chạy trên các con chip, từ tên lửa đến lò vi sóng, đến cả ô tô, điện thoại thông minh, thị trường chứng khoán, thậm chí cả lưới điện. \n\n Gần đây, nước Mỹ đã thiết kế những con chip nhanh nhất và duy trì vị thế số một thế giới, nhưng lợi thế đó đang có nguy cơ suy yếu khi các đối thủ ở Đài Loan, Hàn Quốc và châu Âu nổi lên nắm quyền kiểm soát. Mỹ đã để các thành phần quan trọng của quá trình sản xuất chip vuột khỏi tầm kiểm soát, dẫn đến tình trạng thiếu chip trên toàn thế giới và cuộc chiến vi mạch nổ ra với đối thủ là Trung Quốc đang mong muốn thu hẹp khoảng cách. \n\n Trung Quốc đang chi nhiều tiền cho chip hơn bất kỳ sản phẩm nào khác, rót hàng tỷ đô la vào việc xây dựng chip, đe dọa tới ưu thế quân sự và sự thịnh vượng của nền kinh tế Mỹ. \n\n Con chip của thế kỷ 21 giống như dầu mỏ của thế kỷ 20, và vì thế, lịch sử của chất bán dẫn chính là lịch sử của thế kỷ 21. Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch."
   },
@@ -249,8 +252,12 @@ const BookCard = ({ book, onClick, onToggleWishlist }) => (
         alt={book.title} 
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         loading="lazy"
+        onError={(e) => {
+          e.target.onerror = null; 
+          e.target.src = FALLBACK_IMAGE;
+        }}
       />
-      <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+      <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
         {book.category}
       </div>
     </div>
@@ -334,11 +341,15 @@ const HomeView = ({ books, onBookSelect, onToggleWishlist }) => {
                 <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl transform scale-125 group-hover:bg-white/30 transition-all duration-700"></div>
                 
                 {/* The Book Image - Fixed aspect ratio to explicit heights to prevent collapsing */}
-                <div className="relative w-48 h-72 sm:w-56 sm:h-80 lg:w-64 lg:h-96 rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform group-hover:scale-105 group-hover:-rotate-3 group-hover:-translate-y-3 transition-all duration-500 overflow-hidden ring-1 ring-white/30">
+                <div className="relative w-48 h-72 sm:w-56 sm:h-80 lg:w-64 lg:h-96 rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform group-hover:scale-105 group-hover:-rotate-3 group-hover:-translate-y-3 transition-all duration-500 overflow-hidden ring-1 ring-white/30 bg-gray-200">
                   <img 
                     src={featuredBook.cover} 
                     alt={featuredBook.title} 
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null; 
+                      e.target.src = FALLBACK_IMAGE;
+                    }}
                   />
                   {/* Sheen effect on hover */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -translate-x-full group-hover:translate-x-full"></div>
@@ -516,9 +527,9 @@ const BookDetailView = ({ book, onBack }) => {
         <div className="md:flex">
           {/* Cột bên trái: Ảnh bìa & Nút hành động nhanh */}
           <div className="md:w-1/3 p-8 bg-gray-50 flex flex-col items-center border-r border-gray-100">
-            {/* Khung ảnh bìa */}
+            {/* Khung ảnh bìa - Đảm bảo w/h cố định để ảnh không bị thu thành 0px */}
             <div 
-              className="relative w-48 sm:w-64 aspect-[2/3] rounded-lg shadow-2xl overflow-hidden mb-8 group bg-gray-200 cursor-pointer"
+              className="relative w-48 h-72 sm:w-64 sm:h-96 flex-shrink-0 rounded-lg shadow-2xl overflow-hidden mb-8 group bg-gray-200 cursor-pointer"
               onClick={handleReadClick}
             >
               <img 
@@ -527,14 +538,14 @@ const BookDetailView = ({ book, onBack }) => {
                 className="w-full h-full object-cover block transition-transform duration-500 group-hover:scale-105"
                 onError={(e) => {
                   e.target.onerror = null; 
-                  e.target.src = "https://via.placeholder.com/400x600?text=Ảnh+Bìa+Lỗi";
+                  e.target.src = FALLBACK_IMAGE;
                 }}
               />
-              {/* Overlay khi di chuột vào ảnh */}
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+              {/* Overlay khi di chuột vào ảnh - Sửa lại CSS bg-black/30 thay vì bg-opacity để tránh lỗi thành nền đen thui */}
+              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
                  <button 
-                   onClick={handleReadClick} // Đã bao gồm mở shopee & reader
-                   className="opacity-0 group-hover:opacity-100 bg-white text-gray-900 p-4 rounded-full transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-xl"
+                   onClick={handleReadClick}
+                   className="bg-white text-gray-900 p-4 rounded-full transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-xl"
                  >
                    <BookOpen className="h-7 w-7 text-indigo-600" />
                  </button>
