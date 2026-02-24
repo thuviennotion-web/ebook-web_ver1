@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // --- CONSTANTS & MOCK DATA ---
-const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi"];
+const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi", "Kinh tế"];
 
 // Ảnh dự phòng khi link ảnh bị lỗi (Nhúng trực tiếp Base64 để không phụ thuộc mạng ngoài)
 const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 400 600'%3E%3Crect width='400' height='600' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -28,10 +28,10 @@ const MOCK_BOOKS = [
     pages: 480,
     epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", 
     pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs", 
-    pdfPreviewLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs", 
+    pdfPreviewLink: "https://drive.google.com/open?id=1WLhzZP1O0UVNAHMGajyc9WKsLJSqHdvk&usp=drive_fs", 
     shopeeLink: "https://s.shopee.vn/60L7wsDqsh", 
-    cover: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
-    synopsis: "Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
+    cover: "https://github.com/user-attachments/assets/0c2cd8a2-ada9-45dd-9315-ea7dbcf6e82f?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Ngày nay, sức mạnh quân sự, kinh tế và chính trị được xây dựng trên nền tảng chip máy tính. Hầu như mọi thứ đều chạy trên các con chip, từ tên lửa đến lò vi sóng, đến cả ô tô, điện thoại thông minh, thị trường chứng khoán, thậm chí cả lưới điện. \n\n Gần đây, nước Mỹ đã thiết kế những con chip nhanh nhất và duy trì vị thế số một thế giới, nhưng lợi thế đó đang có nguy cơ suy yếu khi các đối thủ ở Đài Loan, Hàn Quốc và châu Âu nổi lên nắm quyền kiểm soát. Mỹ đã để các thành phần quan trọng của quá trình sản xuất chip vuột khỏi tầm kiểm soát, dẫn đến tình trạng thiếu chip trên toàn thế giới và cuộc chiến vi mạch nổ ra với đối thủ là Trung Quốc đang mong muốn thu hẹp khoảng cách. \n\n Trung Quốc đang chi nhiều tiền cho chip hơn bất kỳ sản phẩm nào khác, rót hàng tỷ đô la vào việc xây dựng chip, đe dọa tới ưu thế quân sự và sự thịnh vượng của nền kinh tế Mỹ. \n\n Con chip của thế kỷ 21 giống như dầu mỏ của thế kỷ 20, và vì thế, lịch sử của chất bán dẫn chính là lịch sử của thế kỷ 21. Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
     content: "Ngày nay, sức mạnh quân sự, kinh tế và chính trị được xây dựng trên nền tảng chip máy tính. Hầu như mọi thứ đều chạy trên các con chip, từ tên lửa đến lò vi sóng, đến cả ô tô, điện thoại thông minh, thị trường chứng khoán, thậm chí cả lưới điện. \n\n Gần đây, nước Mỹ đã thiết kế những con chip nhanh nhất và duy trì vị thế số một thế giới, nhưng lợi thế đó đang có nguy cơ suy yếu khi các đối thủ ở Đài Loan, Hàn Quốc và châu Âu nổi lên nắm quyền kiểm soát. Mỹ đã để các thành phần quan trọng của quá trình sản xuất chip vuột khỏi tầm kiểm soát, dẫn đến tình trạng thiếu chip trên toàn thế giới và cuộc chiến vi mạch nổ ra với đối thủ là Trung Quốc đang mong muốn thu hẹp khoảng cách. \n\n Trung Quốc đang chi nhiều tiền cho chip hơn bất kỳ sản phẩm nào khác, rót hàng tỷ đô la vào việc xây dựng chip, đe dọa tới ưu thế quân sự và sự thịnh vượng của nền kinh tế Mỹ. \n\n Con chip của thế kỷ 21 giống như dầu mỏ của thế kỷ 20, và vì thế, lịch sử của chất bán dẫn chính là lịch sử của thế kỷ 21. Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch."
   },
   {
