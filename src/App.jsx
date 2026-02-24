@@ -13,7 +13,7 @@ const MOCK_BOOKS = [
     title: "Nhà Giả Kim",
     author: "Paulo Coelho",
     category: "Tiểu thuyết",
-   
+    rating: 4.9,
     reviews: 12500,
     coverPrice: "79.000đ",
     publishDate: "15/04/1988",
