@@ -158,6 +158,7 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
             onClick={() => navigateTo('home')}
           >
             <BookOpen className="h-8 w-8 text-indigo-600" />
+            <img width="324" height="324" alt="Image" src="https://github.com/user-attachments/assets/cdd02a30-7d57-43fa-b307-0fd01b1c96ff" className="h-10 w-10 object-contain" />
             <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
           </div>
 
@@ -437,7 +438,7 @@ const LibraryView = ({ books, onBookSelect, onToggleWishlist }) => {
   );
 };
 
-const BookDetailView = ({ book, onBack, onRead }) => {
+const BookDetailView = ({ book, onBack }) => {
   const [copied, setCopied] = useState(false);
 
   if (!book) return (
@@ -446,13 +447,17 @@ const BookDetailView = ({ book, onBack, onRead }) => {
     </div>
   );
 
-  // Xử lý khi nhấn Đọc Thử (Mở shopee tab mới, mở reader)
+  // Xử lý khi nhấn Đọc Thử (Mở shopee tab mới, mở thẳng link PDF Preview ở tab hiện tại)
   const handleReadClick = (e) => {
     e.stopPropagation();
     if (book.shopeeLink) {
       window.open(book.shopeeLink, '_blank');
     }
-    onRead(book);
+    
+    const targetPdfLink = book.pdfPreviewLink || book.pdfLink;
+    if (targetPdfLink) {
+      window.open(targetPdfLink, '_self');
+    }
   };
 
   // Xử lý khi nhấn tải EPUB / PDF (Mở shopee tab mới, tải về tab hiện tại)
@@ -515,7 +520,7 @@ const BookDetailView = ({ book, onBack, onRead }) => {
             {/* Khung ảnh bìa */}
             <div 
               className="relative w-48 sm:w-64 aspect-[2/3] rounded-lg shadow-2xl overflow-hidden mb-8 group bg-gray-200 cursor-pointer"
-              onClick={() => onRead(book)} // Chỉ mở reader, không mở link shopee
+              onClick={handleReadClick}
             >
               <img 
                 src={book.cover} 
@@ -619,69 +624,10 @@ const DetailItem = ({ label, value }) => (
   </div>
 );
 
-// Trình xem PDF nhúng iframe
-const ReaderView = ({ book, onBack }) => {
-  if (!book) return null;
-
-  // Sử dụng trực tiếp link đọc thử bạn đã cấp mà không cần qua chuyển đổi
-  const targetPdfLink = book.pdfPreviewLink || book.pdfLink;
-
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-gray-100">
-      {/* Reader Header */}
-      <div className="bg-white shadow-[0_2px_10px_rgba(0,0,0,0.05)] border-b border-gray-200 px-4 py-3 flex items-center justify-between z-10">
-        <div className="flex items-center">
-          <button 
-            onClick={onBack}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors mr-2 flex items-center justify-center"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <div>
-            <h2 className="font-bold text-sm md:text-base text-gray-900 line-clamp-1">
-              {book.title} - Xem trước
-            </h2>
-            <p className="text-xs text-gray-500 hidden sm:block">{book.author}</p>
-          </div>
-        </div>
-        
-        <div className="flex items-center">
-          <button 
-            onClick={() => window.open(targetPdfLink, '_blank')}
-            className="flex items-center px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-sm font-medium transition-colors"
-          >
-            <Download className="h-4 w-4 mr-1.5" />
-            <span className="hidden sm:inline">Mở PDF trong tab mới</span>
-            <span className="sm:hidden">Mở</span>
-          </button>
-        </div>
-      </div>
-
-      {/* PDF Viewer Area (iframe) */}
-      <div className="flex-1 w-full bg-gray-200 relative">
-        {targetPdfLink ? (
-          <iframe 
-            src={targetPdfLink}
-            className="w-full h-full border-none"
-            title={`PDF Preview of ${book.title}`}
-            allow="autoplay"
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500 px-4 text-center">
-            <BookOpen className="h-16 w-16 text-gray-300 mb-4" />
-            <p className="text-lg font-medium text-gray-700">Không có bản PDF xem trước</p>
-            <p className="text-sm mt-2">Cuốn sách này chưa được cập nhật link PDF hợp lệ.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 // --- MAIN APP COMPONENT ---
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'detail', 'reader', 'library'
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'detail', 'library'
   const [selectedBookId, setSelectedBookId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [booksData, setBooksData] = useState(MOCK_BOOKS);
@@ -694,10 +640,6 @@ export default function App() {
         const id = parseInt(hash.replace('/book/', ''), 10);
         setSelectedBookId(id);
         setCurrentView('detail');
-      } else if (hash.startsWith('/read/')) {
-        const id = parseInt(hash.replace('/read/', ''), 10);
-        setSelectedBookId(id);
-        setCurrentView('reader');
       } else if (hash === '/library') {
         setCurrentView('library');
       } else {
@@ -753,10 +695,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleReadBook = (book) => {
-    window.location.hash = `/read/${book.id}`;
-  };
-
   const navigateTo = (view) => {
     if (view === 'home') {
       setSearchQuery('');
@@ -768,69 +706,59 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900">
-      {/* Ẩn header khi đang ở chế độ đọc */}
-      {currentView !== 'reader' && (
-        <Header 
-          onSearch={handleSearchSubmit} 
-          searchQuery={searchQuery}
-          navigateTo={navigateTo} 
-          currentView={currentView}
-        />
-      )}
+    <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900 flex flex-col">
+      <Header 
+        onSearch={handleSearchSubmit} 
+        searchQuery={searchQuery}
+        navigateTo={navigateTo} 
+        currentView={currentView}
+      />
 
-      {/* Routing cơ bản */}
-      {currentView === 'home' && (
-        <HomeView 
-          books={displayedBooks} 
-          onBookSelect={handleBookSelect} 
-          onToggleWishlist={handleToggleWishlist}
-        />
-      )}
+      {/* Main Content Area (flex-1 to push footer down) */}
+      <div className="flex-1">
+        {/* Routing cơ bản */}
+        {currentView === 'home' && (
+          <HomeView 
+            books={displayedBooks} 
+            onBookSelect={handleBookSelect} 
+            onToggleWishlist={handleToggleWishlist}
+          />
+        )}
 
-      {currentView === 'library' && (
-        <LibraryView 
-          books={booksData} 
-          onBookSelect={handleBookSelect} 
-          onToggleWishlist={handleToggleWishlist}
-        />
-      )}
+        {currentView === 'library' && (
+          <LibraryView 
+            books={booksData} 
+            onBookSelect={handleBookSelect} 
+            onToggleWishlist={handleToggleWishlist}
+          />
+        )}
 
-      {currentView === 'detail' && (
-        <BookDetailView 
-          book={selectedBook} 
-          onBack={() => { window.location.hash = '/'; }}
-          onRead={handleReadBook}
-        />
-      )}
+        {currentView === 'detail' && (
+          <BookDetailView 
+            book={selectedBook} 
+            onBack={() => { window.location.hash = '/'; }}
+          />
+        )}
+      </div>
 
-      {currentView === 'reader' && (
-        <ReaderView 
-          book={selectedBook} 
-          onBack={() => { window.location.hash = `/book/${selectedBook.id}`; }} 
-        />
-      )}
-
-      {/* Footer đơn giản (ẩn trong Reader) */}
-      {currentView !== 'reader' && (
-        <footer className="bg-white border-t border-gray-200 mt-16 py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center mb-4 md:mb-0">
-              <BookOpen className="h-8 w-8 text-indigo-600" />
+      {/* Footer đơn giản */}
+      <footer className="bg-white border-t border-gray-200 mt-16 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center mb-4 md:mb-0">
+            <BookOpen className="h-8 w-8 text-indigo-600" />
             <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
-              <p className="ml-2 text-gray-500 text-sm">
-                &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
-              </p>
-            </div>
-            <div className="flex items-center">
-              <a href="https://facebook.com/thuviennotion" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-400 hover:text-blue-600 transition-colors">
-                <Facebook className="h-12 w-12 mr-2" />
-                <span className="text-lg font-medium">Facebook</span>
-              </a>
-            </div>
+            <p className="ml-2 text-gray-500 text-sm">
+              &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
+            </p>
           </div>
-        </footer>
-      )}
+          <div className="flex items-center">
+            <a href="https://facebook.com/thuviennotion" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-400 hover:text-blue-600 transition-colors">
+              <Facebook className="h-12 w-12 mr-2" />
+              <span className="text-lg font-medium">Facebook</span>
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
