@@ -24,7 +24,7 @@ const MOCK_BOOKS = [
     distributor: "Nhã Nam",
     pages: 480,
     epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", 
-    pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs",  
+    pdfLink: "https://drive.google.com/open?id=10HVtwz3Ht8i0zjttn4D0asbYjnuYudBS&usp=drive_fs",  
     shopeeLink: "https://s.shopee.vn/60L7wsDqsh", 
     // Sửa lại link ảnh cover thành link tuyệt đối thay vì link cục bộ
     cover: "https://github.com/user-attachments/assets/0c2cd8a2-ada9-45dd-9315-ea7dbcf6e82f?q=80&w=800&auto=format&fit=crop",
