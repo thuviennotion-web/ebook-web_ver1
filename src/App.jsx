@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // --- MOCK DATA ---
-const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi"];
+const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi", "Kinh tế"];
 
 const MOCK_BOOKS = [
   {
@@ -25,7 +25,7 @@ const MOCK_BOOKS = [
     pages: 480,
     epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", 
     pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs", // Link dùng để tải về
-    pdfPreviewLink: "https://drive.google.com/file/d/1WLhzZP1O0UVNAHMGajyc9WKsLJSqHdvk/view?usp=sharing", // Link dùng cho bản xem trước (đọc thử)
+    pdfPreviewLink: "https://drive.google.com/open?id=1WLhzZP1O0UVNAHMGajyc9WKsLJSqHdvk&usp=drive_fs", // Link dùng cho bản xem trước (đọc thử)
     shopeeLink: "https://s.shopee.vn/60L7wsDqsh", 
     cover: "https://github.com/user-attachments/assets/0c2cd8a2-ada9-45dd-9315-ea7dbcf6e82f?q=80&w=800&auto=format&fit=crop",
     synopsis: "Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
@@ -623,22 +623,8 @@ const DetailItem = ({ label, value }) => (
 const ReaderView = ({ book, onBack }) => {
   if (!book) return null;
 
-  // Sử dụng link đọc thử (nếu không có thì dùng link tải PDF làm mặc định)
+  // Sử dụng trực tiếp link đọc thử bạn đã cấp mà không cần qua chuyển đổi
   const targetPdfLink = book.pdfPreviewLink || book.pdfLink;
-
-  // Hàm chuyển đổi link Google Drive từ view/open sang dạng embed (preview)
-  const getEmbedLink = (url) => {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-      const idMatch = url.match(/id=([^&]+)/);
-      if (idMatch && idMatch[1]) {
-        return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
-      }
-    }
-    return url;
-  };
-
-  const embedUrl = getEmbedLink(targetPdfLink);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-gray-100">
@@ -673,9 +659,9 @@ const ReaderView = ({ book, onBack }) => {
 
       {/* PDF Viewer Area (iframe) */}
       <div className="flex-1 w-full bg-gray-200 relative">
-        {embedUrl && embedUrl.includes('drive.google.com') ? (
+        {targetPdfLink ? (
           <iframe 
-            src={embedUrl}
+            src={targetPdfLink}
             className="w-full h-full border-none"
             title={`PDF Preview of ${book.title}`}
             allow="autoplay"
