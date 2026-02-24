@@ -15,9 +15,13 @@ const MOCK_BOOKS = [
     category: "Tiểu thuyết",
     rating: 4.8,
     reviews: 12500,
-    price: "Miễn phí",
     coverPrice: "79.000đ",
-    publishDate: "1988",
+    publishDate: "15/04/1988",
+    postDate: "2026-02-24",
+    clicks: 1250,
+    publisher: "NXB Văn Học",
+    distributor: "Nhã Nam",
+    pages: 227,
     epubLink: "https://drive.google.com/...", // Sửa link Google Drive của bạn ở đây
     pdfLink: "https://drive.google.com/...",  // Sửa link Google Drive của bạn ở đây
     shopeeLink: "https://shopee.vn/...", // Sửa link Shopee Affiliate của bạn ở đây
@@ -32,9 +36,13 @@ const MOCK_BOOKS = [
     category: "Kỹ năng sống",
     rating: 4.9,
     reviews: 32000,
-    price: "49.000đ",
     coverPrice: "86.000đ",
-    publishDate: "1936",
+    publishDate: "01/10/1936",
+    postDate: "2026-02-22",
+    clicks: 3400,
+    publisher: "NXB Tổng hợp TP.HCM",
+    distributor: "First News",
+    pages: 320,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
@@ -49,9 +57,13 @@ const MOCK_BOOKS = [
     category: "Lịch sử",
     rating: 4.7,
     reviews: 8900,
-    price: "89.000đ",
     coverPrice: "250.000đ",
-    publishDate: "2011",
+    publishDate: "04/09/2011",
+    postDate: "2026-02-23",
+    clicks: 850,
+    publisher: "NXB Tri Thức",
+    distributor: "Omega Plus",
+    pages: 512,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
@@ -66,9 +78,13 @@ const MOCK_BOOKS = [
     category: "Khoa học",
     rating: 4.8,
     reviews: 5400,
-    price: "Miễn phí",
     coverPrice: "185.000đ",
-    publishDate: "1980",
+    publishDate: "01/12/1980",
+    postDate: "2026-02-15",
+    clicks: 600,
+    publisher: "NXB Thế Giới",
+    distributor: "Nhã Nam",
+    pages: 480,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
@@ -83,9 +99,13 @@ const MOCK_BOOKS = [
     category: "Thiếu nhi",
     rating: 4.9,
     reviews: 15000,
-    price: "Miễn phí",
     coverPrice: "55.000đ",
-    publishDate: "1941",
+    publishDate: "10/05/1941",
+    postDate: "2026-02-18",
+    clicks: 2100,
+    publisher: "NXB Kim Đồng",
+    distributor: "NXB Kim Đồng",
+    pages: 148,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
@@ -100,9 +120,13 @@ const MOCK_BOOKS = [
     category: "Kỹ năng sống",
     rating: 4.6,
     reviews: 7200,
-    price: "65.000đ",
     coverPrice: "219.000đ",
-    publishDate: "2011",
+    publishDate: "25/10/2011",
+    postDate: "2026-02-10",
+    clicks: 950,
+    publisher: "NXB Thế Giới",
+    distributor: "Alpha Books",
+    pages: 612,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
@@ -114,7 +138,7 @@ const MOCK_BOOKS = [
 
 // --- COMPONENTS ---
 
-const Header = ({ onSearch, navigateTo, currentView }) => {
+const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -127,18 +151,19 @@ const Header = ({ onSearch, navigateTo, currentView }) => {
             onClick={() => navigateTo('home')}
           >
             <BookOpen className="h-8 w-8 text-indigo-600" />
-            <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
+            <span className="ml-2 text-xl font-bold text-gray-900">thuviennotion</span>
           </div>
 
           {/* Desktop Search & Nav */}
           <div className="hidden md:flex flex-1 items-center justify-center px-8">
-            {currentView === 'home' && (
+            {(currentView === 'home' || currentView === 'detail') && (
               <div className="relative w-full max-w-md">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   type="text"
+                  value={searchQuery}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-full leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200"
                   placeholder="Tìm kiếm sách, tác giả..."
                   onChange={(e) => onSearch(e.target.value)}
@@ -173,7 +198,7 @@ const Header = ({ onSearch, navigateTo, currentView }) => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {currentView === 'home' && (
+            {(currentView === 'home' || currentView === 'detail') && (
               <div className="p-2">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -181,6 +206,7 @@ const Header = ({ onSearch, navigateTo, currentView }) => {
                   </div>
                   <input
                     type="text"
+                    value={searchQuery}
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:bg-white sm:text-sm"
                     placeholder="Tìm kiếm..."
                     onChange={(e) => onSearch(e.target.value)}
@@ -222,9 +248,6 @@ const BookCard = ({ book, onClick }) => (
           <Star className="h-4 w-4 fill-current" />
           <span className="ml-1 text-sm font-medium text-gray-700">{book.rating}</span>
         </div>
-        <span className={`text-sm font-bold ${book.price === 'Miễn phí' ? 'text-green-600' : 'text-indigo-600'}`}>
-          {book.price}
-        </span>
       </div>
     </div>
   </div>
@@ -232,39 +255,81 @@ const BookCard = ({ book, onClick }) => (
 
 const HomeView = ({ books, onBookSelect }) => {
   const [activeCategory, setActiveCategory] = useState("Tất cả");
+  const [sortBy, setSortBy] = useState("popular");
+
+  const featuredBook = useMemo(() => {
+    if (!books || books.length === 0) return null;
+    return [...books].sort((a, b) => b.clicks - a.clicks)[0];
+  }, [books]);
 
   const filteredBooks = useMemo(() => {
-    if (activeCategory === "Tất cả") return books;
-    return books.filter(book => book.category === activeCategory);
-  }, [books, activeCategory]);
+    let result = books;
+    if (activeCategory !== "Tất cả") {
+      result = result.filter(book => book.category === activeCategory);
+    }
+    
+    // Sort logic
+    result = [...result].sort((a, b) => {
+      if (sortBy === 'popular') return b.clicks - a.clicks;
+      if (sortBy === 'newest') return new Date(b.postDate) - new Date(a.postDate);
+      return 0;
+    });
+
+    return result;
+  }, [books, activeCategory, sortBy]);
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg overflow-hidden mb-12 relative">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative z-10 px-6 py-12 md:py-16 md:px-12 lg:w-2/3 flex flex-col items-start">
-          <span className="inline-block py-1 px-3 rounded-full bg-white bg-opacity-20 text-white text-xs font-semibold tracking-wider mb-4 border border-white border-opacity-30 backdrop-blur-sm">
-            SÁCH NỔI BẬT TRONG TUẦN
-          </span>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-            Đọc sách mọi lúc,<br/> mọi nơi với thuviennotion
-          </h1>
-          <p className="text-indigo-100 text-lg mb-8 max-w-xl">
-            Khám phá hàng ngàn cuốn sách hấp dẫn thuộc mọi thể loại. Đăng ký ngay hôm nay để nhận ưu đãi đọc sách miễn phí 30 ngày.
-          </p>
-          <button className="bg-white text-indigo-600 px-6 py-3 rounded-full font-bold hover:bg-indigo-50 transition-colors shadow-md">
-            Khám phá ngay
-          </button>
+      {featuredBook && (
+        <div 
+          className="bg-gradient-to-r from-indigo-700 to-purple-800 rounded-3xl shadow-xl overflow-hidden mb-12 relative cursor-pointer group"
+          onClick={() => onBookSelect(featuredBook)}
+        >
+          {/* Subtle background pattern/glow */}
+          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-white opacity-5 blur-3xl pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-indigo-500 opacity-20 blur-3xl pointer-events-none"></div>
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-6 py-12 md:py-16 md:px-14">
+            
+            {/* Content Left */}
+            <div className="md:w-3/5 flex flex-col items-start text-left z-20">
+              <span className="inline-block py-1 px-4 rounded-full bg-white/20 text-indigo-50 text-xs font-bold tracking-widest mb-6 border border-white/20 backdrop-blur-md shadow-sm uppercase">
+                Sách nổi bật nhất
+              </span>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-md line-clamp-2">
+                {featuredBook.title}
+              </h1>
+              <p className="text-indigo-100/90 text-lg md:text-xl mb-8 max-w-xl line-clamp-3 leading-relaxed font-light">
+                {featuredBook.synopsis}
+              </p>
+              <button className="bg-white text-indigo-700 px-8 py-3.5 rounded-full font-bold hover:bg-indigo-50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center">
+                <BookOpen className="h-5 w-5 mr-2.5" /> Khám phá ngay
+              </button>
+            </div>
+
+            {/* Book Cover Right */}
+            <div className="w-full md:w-2/5 flex justify-center items-center mt-12 md:mt-0 z-20 relative">
+              <div className="relative">
+                {/* Decorative background circle */}
+                <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl transform scale-125 group-hover:bg-white/30 transition-all duration-700"></div>
+                
+                {/* The Book Image */}
+                <div className="relative w-48 sm:w-56 lg:w-64 aspect-[2/3] rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform group-hover:scale-105 group-hover:-rotate-3 group-hover:-translate-y-3 transition-all duration-500 overflow-hidden ring-1 ring-white/30">
+                  <img 
+                    src={featuredBook.cover} 
+                    alt={featuredBook.title} 
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Sheen effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -translate-x-full group-hover:translate-x-full"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
-        <div className="hidden lg:block absolute right-0 bottom-0 top-0 w-1/3">
-          <img 
-            src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800&auto=format&fit=crop" 
-            alt="Hero background" 
-            className="w-full h-full object-cover opacity-60 mix-blend-overlay"
-          />
-        </div>
-      </div>
+      )}
 
       {/* Categories */}
       <div className="mb-8 overflow-x-auto pb-4 hide-scrollbar">
@@ -287,12 +352,26 @@ const HomeView = ({ books, onBookSelect }) => {
 
       {/* Book Grid */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-          {activeCategory === "Tất cả" ? "Thịnh hành nhất" : `Sách ${activeCategory}`}
-          <span className="ml-3 text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-            {filteredBooks.length} cuốn
-          </span>
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+            {activeCategory === "Tất cả" ? "Thịnh hành nhất" : `Sách ${activeCategory}`}
+            <span className="ml-3 text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              {filteredBooks.length} cuốn
+            </span>
+          </h2>
+          
+          <div className="flex items-center space-x-2">
+            <label className="text-sm text-gray-500 font-medium whitespace-nowrap">Sắp xếp:</label>
+            <select 
+              className="bg-white border border-gray-300 text-gray-700 py-1.5 px-3 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-medium transition-colors cursor-pointer"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="popular">Độ phổ biến</option>
+              <option value="newest">Mới nhất</option>
+            </select>
+          </div>
+        </div>
         
         {filteredBooks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -384,9 +463,6 @@ const BookDetailView = ({ book, onBack, onRead }) => {
               <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wide">
                 {book.category}
               </span>
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-md border ${book.price === 'Miễn phí' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-700 border-gray-200'}`}>
-                {book.price}
-              </span>
             </div>
             
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 leading-tight">
@@ -396,31 +472,28 @@ const BookDetailView = ({ book, onBack, onRead }) => {
             
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-8 pb-8 border-b border-gray-100">
               <div className="flex flex-col">
-                <div className="flex items-center text-amber-400 text-lg font-bold">
-                  <span>{book.rating}</span>
-                  <Star className="h-5 w-5 fill-current ml-1" />
-                </div>
-                <span className="text-sm text-gray-500 mt-1">{book.reviews.toLocaleString()} Đánh giá</span>
+                <span className="text-lg font-bold text-gray-900">{book.publisher || 'N/A'}</span>
+                <span className="text-sm text-gray-500 mt-1">Nhà xuất bản</span>
               </div>
               <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">{book.coverPrice || 'N/A'}</span>
-                <span className="text-sm text-gray-500 mt-1">Giá bìa</span>
+                <span className="text-lg font-bold text-gray-900">{book.distributor || 'N/A'}</span>
+                <span className="text-sm text-gray-500 mt-1">Nhà phát hành</span>
               </div>
               <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
               <div className="flex flex-col">
                 <span className="text-lg font-bold text-gray-900">{book.publishDate || 'N/A'}</span>
-                <span className="text-sm text-gray-500 mt-1">Xuất bản</span>
+                <span className="text-sm text-gray-500 mt-1">Ngày xuất bản</span>
               </div>
               <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">340</span>
-                <span className="text-sm text-gray-500 mt-1">Trang</span>
+                <span className="text-lg font-bold text-gray-900">{book.pages || 'N/A'}</span>
+                <span className="text-sm text-gray-500 mt-1">Số trang</span>
               </div>
               <div className="hidden md:block h-10 w-px bg-gray-200"></div>
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">Tiếng Việt</span>
-                <span className="text-sm text-gray-500 mt-1">Ngôn ngữ</span>
+                <span className="text-lg font-bold text-gray-900">{book.coverPrice || 'N/A'}</span>
+                <span className="text-sm text-gray-500 mt-1">Giá bìa</span>
               </div>
             </div>
 
@@ -539,27 +612,46 @@ const ReaderView = ({ book, onBack }) => {
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home'); // 'home', 'detail', 'reader'
-  const [selectedBook, setSelectedBook] = useState(null);
+  const [selectedBookId, setSelectedBookId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [booksData, setBooksData] = useState(MOCK_BOOKS);
+
+  // Lấy thông tin sách đang được chọn
+  const selectedBook = useMemo(() => 
+    booksData.find(b => b.id === selectedBookId) || null
+  , [booksData, selectedBookId]);
 
   // Lọc sách theo từ khóa tìm kiếm
   const displayedBooks = useMemo(() => {
-    if (!searchQuery.trim()) return MOCK_BOOKS;
+    if (!searchQuery.trim()) return booksData;
     const lowerQuery = searchQuery.toLowerCase();
-    return MOCK_BOOKS.filter(book => 
+    return booksData.filter(book => 
       book.title.toLowerCase().includes(lowerQuery) || 
       book.author.toLowerCase().includes(lowerQuery)
     );
-  }, [searchQuery]);
+  }, [searchQuery, booksData]);
+
+  const handleSearchSubmit = (query) => {
+    setSearchQuery(query);
+    // Tự động chuyển về trang chủ nếu đang tìm kiếm trong màn hình khác
+    if (currentView !== 'home' && query.trim() !== '') {
+      setCurrentView('home');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const handleBookSelect = (book) => {
-    setSelectedBook(book);
+    // Tăng số lượt click để làm dữ liệu cho "Độ phổ biến"
+    setBooksData(prev => prev.map(b => 
+      b.id === book.id ? { ...b, clicks: b.clicks + 1 } : b
+    ));
+    setSelectedBookId(book.id);
     setCurrentView('detail');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleReadBook = (book) => {
-    setSelectedBook(book);
+    setSelectedBookId(book.id);
     setCurrentView('reader');
   };
 
@@ -574,7 +666,8 @@ export default function App() {
       {/* Ẩn header khi đang ở chế độ đọc */}
       {currentView !== 'reader' && (
         <Header 
-          onSearch={setSearchQuery} 
+          onSearch={handleSearchSubmit} 
+          searchQuery={searchQuery}
           navigateTo={navigateToHome} 
           currentView={currentView}
         />
