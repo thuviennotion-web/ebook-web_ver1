@@ -294,8 +294,8 @@ const HomeView = ({ books, onBookSelect }) => {
             
             {/* Content Left */}
             <div className="md:w-3/5 flex flex-col items-start text-left z-20">
-              <span className="inline-block py-1 px-4 rounded-full bg-white/20 text-indigo-50 text-xs font-bold tracking-widest mb-6 border border-white/20 backdrop-blur-md shadow-sm uppercase">
-                Sách nổi bật nhất
+              <span className="inline-block py-1 px-3 rounded-full bg-indigo-800 text-indigo-200 text-sm font-semibold tracking-wider">
+                SÁCH MỚI NỔI BẬT
               </span>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-md line-clamp-2">
                 {featuredBook.title}
