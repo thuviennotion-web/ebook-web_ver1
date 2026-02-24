@@ -448,7 +448,7 @@ const BookDetailView = ({ book, onBack, onRead }) => {
         <div className="md:flex">
           {/* Cover & Quick Actions */}
           <div className="md:w-1/3 p-8 bg-gray-50 flex flex-col items-center border-r border-gray-100">
-            <div className="relative w-48 sm:w-64 aspect-[2/3] rounded-lg shadow-2xl overflow-hidden mb-8 group">
+            <div className="relative w-48 sm:w-64 aspect-[2/3] min-h-[288px] sm:min-h-[384px] rounded-lg shadow-2xl overflow-hidden mb-8 group">
               <img 
                 src={book.cover} 
                 alt={book.title} 
@@ -758,7 +758,8 @@ export default function App() {
         <footer className="bg-white border-t border-gray-200 mt-16 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center mb-4 md:mb-0">
-              <img src="stamp.png" alt="thuviennotion logo" className="h-10 w-10 object-contain mr-3" />
+              <img src="stamp.png" alt="thuviennotion logo" className="h-10 w-10 object-contain" />
+            <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
               <p className="text-gray-500 text-sm">
                 &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
               </p>
