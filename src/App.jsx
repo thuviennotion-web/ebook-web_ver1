@@ -763,7 +763,7 @@ export default function App() {
             <div className="flex items-center">
               <a href="https://facebook.com/thuviennotion" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-400 hover:text-blue-600 transition-colors">
                 <Facebook className="h-6 w-6 mr-2" />
-                <span className="text-sm font-medium">Facebook</span>
+                <span className="text-sm font-large">Facebook</span>
               </a>
             </div>
           </div>
