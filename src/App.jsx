@@ -127,7 +127,7 @@ const Header = ({ onSearch, navigateTo, currentView }) => {
             onClick={() => navigateTo('home')}
           >
             <BookOpen className="h-8 w-8 text-indigo-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">thuviennotion</span>
+            <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
           </div>
 
           {/* Desktop Search & Nav */}
