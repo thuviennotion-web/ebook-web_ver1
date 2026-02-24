@@ -23,10 +23,10 @@ const MOCK_BOOKS = [
     publisher: "NXB Thế Giới",
     distributor: "Nhã Nam",
     pages: 480,
-    epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", // Sửa link Google Drive của bạn ở đây
-    pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs",  // Sửa link Google Drive của bạn ở đây
-    shopeeLink: "https://s.shopee.vn/60L7wsDqsh", // Sửa link Shopee Affiliate của bạn ở đây
-    cover: "images/cover-1.jpg?q=80&w=800&auto=format&fit=crop",
+    epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", 
+    pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs",  
+    shopeeLink: "https://s.shopee.vn/60L7wsDqsh", 
+    cover: "https://github.com/thuviennotion-web/ebook-web_ver1/blob/58c62dc81191d6a49931d86215593d578ec4f4c0/images/cover-1.jpg?q=80&w=800&auto=format&fit=crop",
     synopsis: "Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
     content: "Ngày nay, sức mạnh quân sự, kinh tế và chính trị được xây dựng trên nền tảng chip máy tính. Hầu như mọi thứ đều chạy trên các con chip, từ tên lửa đến lò vi sóng, đến cả ô tô, điện thoại thông minh, thị trường chứng khoán, thậm chí cả lưới điện. \n\n Gần đây, nước Mỹ đã thiết kế những con chip nhanh nhất và duy trì vị thế số một thế giới, nhưng lợi thế đó đang có nguy cơ suy yếu khi các đối thủ ở Đài Loan, Hàn Quốc và châu Âu nổi lên nắm quyền kiểm soát. Mỹ đã để các thành phần quan trọng của quá trình sản xuất chip vuột khỏi tầm kiểm soát, dẫn đến tình trạng thiếu chip trên toàn thế giới và cuộc chiến vi mạch nổ ra với đối thủ là Trung Quốc đang mong muốn thu hẹp khoảng cách. \n\n Trung Quốc đang chi nhiều tiền cho chip hơn bất kỳ sản phẩm nào khác, rót hàng tỷ đô la vào việc xây dựng chip, đe dọa tới ưu thế quân sự và sự thịnh vượng của nền kinh tế Mỹ. \n\n Con chip của thế kỷ 21 giống như dầu mỏ của thế kỷ 20, và vì thế, lịch sử của chất bán dẫn chính là lịch sử của thế kỷ 21. Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch."
   },
@@ -438,11 +438,28 @@ const BookDetailView = ({ book, onBack, onRead }) => {
     </div>
   );
 
-  // Hàm xử lý khi nhấn vào nút tải hoặc ảnh để tối ưu Shopee Affiliate
-  const handleAffiliateClick = (e, type) => {
+  // Xử lý khi nhấn Đọc Thử (Mở shopee tab mới, mở reader)
+  const handleReadClick = (e) => {
+    e.stopPropagation();
     if (book.shopeeLink) {
-      // Nếu có link Shopee, mở link đó thay vì chỉ tải file
       window.open(book.shopeeLink, '_blank');
+    }
+    onRead(book);
+  };
+
+  // Xử lý khi nhấn tải EPUB / PDF (Mở shopee tab mới, tải về tab hiện tại)
+  const handleDownloadClick = (e, type) => {
+    e.stopPropagation();
+    
+    // 1. Mở link shopee ở tab mới
+    if (book.shopeeLink) {
+      window.open(book.shopeeLink, '_blank');
+    }
+
+    // 2. Mở file tải ở tab hiện tại
+    const link = type === 'epub' ? book.epubLink : book.pdfLink;
+    if (link) {
+      window.open(link, '_self');
     }
   };
 
@@ -461,16 +478,15 @@ const BookDetailView = ({ book, onBack, onRead }) => {
         <div className="md:flex">
           {/* Cột bên trái: Ảnh bìa & Nút hành động nhanh */}
           <div className="md:w-1/3 p-8 bg-gray-50 flex flex-col items-center border-r border-gray-100">
-            {/* Khung ảnh bìa - Đã thêm bg-gray-200 để không bị trắng xóa khi lỗi */}
+            {/* Khung ảnh bìa */}
             <div 
               className="relative w-48 sm:w-64 aspect-[2/3] rounded-lg shadow-2xl overflow-hidden mb-8 group bg-gray-200 cursor-pointer"
-              onClick={() => handleAffiliateClick()}
+              onClick={() => onRead(book)} // Chỉ mở reader, không mở link shopee
             >
               <img 
                 src={book.cover} 
                 alt={book.title} 
                 className="w-full h-full object-cover block transition-transform duration-500 group-hover:scale-105"
-                // Xử lý khi link ảnh die
                 onError={(e) => {
                   e.target.onerror = null; 
                   e.target.src = "https://via.placeholder.com/400x600?text=Ảnh+Bìa+Lỗi";
@@ -479,7 +495,7 @@ const BookDetailView = ({ book, onBack, onRead }) => {
               {/* Overlay khi di chuột vào ảnh */}
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
                  <button 
-                   onClick={(e) => { e.stopPropagation(); onRead(book); }} 
+                   onClick={handleReadClick} // Đã bao gồm mở shopee & reader
                    className="opacity-0 group-hover:opacity-100 bg-white text-gray-900 p-4 rounded-full transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-xl"
                  >
                    <BookOpen className="h-7 w-7 text-indigo-600" />
@@ -487,25 +503,26 @@ const BookDetailView = ({ book, onBack, onRead }) => {
               </div>
             </div>
             
-            {/* Các nút hành động */}
+            {/* Nút Đọc thử */}
             <button 
-              onClick={() => onRead(book)}
+              onClick={handleReadClick}
               className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition-all shadow-md flex justify-center items-center mb-3 active:scale-95"
             >
               <BookOpen className="h-5 w-5 mr-2" />
               Đọc thử ngay
             </button>
             
+            {/* Các nút Tải xuống */}
             <div className="flex w-full space-x-3">
               <button 
-                onClick={(e) => handleAffiliateClick(e, 'epub')}
+                onClick={(e) => handleDownloadClick(e, 'epub')}
                 className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 hover:border-indigo-200 transition-colors flex justify-center items-center"
               >
                 <Download className="h-4 w-4 mr-1.5 text-indigo-500" />
                 EPUB
               </button>
               <button 
-                onClick={(e) => handleAffiliateClick(e, 'pdf')}
+                onClick={(e) => handleDownloadClick(e, 'pdf')}
                 className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 hover:border-indigo-200 transition-colors flex justify-center items-center"
               >
                 <Download className="h-4 w-4 mr-1.5 text-red-500" />
