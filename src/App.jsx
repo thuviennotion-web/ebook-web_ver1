@@ -158,7 +158,6 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
             onClick={() => navigateTo('home')}
           >
             <BookOpen className="h-8 w-8 text-indigo-600" />
-            <img width="324" height="324" alt="Image" src="https://github.com/user-attachments/assets/cdd02a30-7d57-43fa-b307-0fd01b1c96ff" className="h-10 w-10 object-contain" />
             <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
           </div>
 
