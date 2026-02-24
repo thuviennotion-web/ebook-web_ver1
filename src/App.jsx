@@ -333,12 +333,12 @@ const HomeView = ({ books, onBookSelect, onToggleWishlist }) => {
                 {/* Decorative background circle */}
                 <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl transform scale-125 group-hover:bg-white/30 transition-all duration-700"></div>
                 
-                {/* The Book Image */}
-                <div className="relative w-48 sm:w-56 lg:w-64 aspect-[2/3] rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform group-hover:scale-105 group-hover:-rotate-3 group-hover:-translate-y-3 transition-all duration-500 overflow-hidden ring-1 ring-white/30">
+                {/* The Book Image - Fixed aspect ratio to explicit heights to prevent collapsing */}
+                <div className="relative w-48 h-72 sm:w-56 sm:h-80 lg:w-64 lg:h-96 rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform group-hover:scale-105 group-hover:-rotate-3 group-hover:-translate-y-3 transition-all duration-500 overflow-hidden ring-1 ring-white/30">
                   <img 
                     src={featuredBook.cover} 
                     alt={featuredBook.title} 
-                    className="w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                   {/* Sheen effect on hover */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -translate-x-full group-hover:translate-x-full"></div>
