@@ -304,8 +304,8 @@ const HomeView = ({ books, onBookSelect, onToggleWishlist }) => {
             
             {/* Content Left */}
             <div className="md:w-3/5 flex flex-col items-start text-left z-20">
-              <span className="inline-block py-1 px-3 rounded-full bg-indigo-800 text-indigo-200 text-sm font-semibold tracking-wider">
-                SÁCH MỚI NỔI BẬT
+              <span className="inline-block py-1 px-4 rounded-full bg-white/20 text-indigo-50 text-xs font-bold tracking-widest mb-6 border border-white/20 backdrop-blur-md shadow-sm uppercase">
+                Sách nổi bật nhất
               </span>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-md line-clamp-2">
                 {featuredBook.title}
@@ -313,11 +313,9 @@ const HomeView = ({ books, onBookSelect, onToggleWishlist }) => {
               <p className="text-indigo-100/90 text-lg md:text-xl mb-8 max-w-xl line-clamp-3 leading-relaxed font-light">
                 {featuredBook.synopsis}
               </p>
-               <div className="flex space-x-4">
-                <button className="bg-white text-indigo-900 px-8 py-3 rounded-full font-bold hover:bg-slate-100 transition-colors shadow-lg">
-                  Bắt đầu đọc
-                </button>
-              </div>
+              <button className="bg-white text-indigo-700 px-8 py-3.5 rounded-full font-bold hover:bg-indigo-50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center">
+                <BookOpen className="h-5 w-5 mr-2.5" /> Khám phá ngay
+              </button>
             </div>
 
             {/* Book Cover Right */}
