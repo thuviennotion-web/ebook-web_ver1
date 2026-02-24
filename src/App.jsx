@@ -151,7 +151,6 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
             className="flex items-center cursor-pointer" 
             onClick={() => navigateTo('home')}
           >
-            <img src="/stamp.png" alt="logo" className="h-10 w-10 object-contain" />
             <BookOpen className="h-8 w-8 text-indigo-600" />
             <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
           </div>
@@ -777,7 +776,7 @@ export default function App() {
         <footer className="bg-white border-t border-gray-200 mt-16 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center mb-4 md:mb-0">
-              <img src="https://github.com/thuviennotion-web/ebook-web_ver1/blob/8a68fe7636c9f499a94e322d1a2e6e10e497b823/stamp.png" alt="logo" className="h-10 w-10 object-contain" />
+              <BookOpen className="h-8 w-8 text-indigo-600" />
             <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
               <p className="ml-2 text-gray-500 text-sm">
                 &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
