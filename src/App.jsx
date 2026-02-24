@@ -303,9 +303,11 @@ const HomeView = ({ books, onBookSelect }) => {
               <p className="text-indigo-100/90 text-lg md:text-xl mb-8 max-w-xl line-clamp-3 leading-relaxed font-light">
                 {featuredBook.synopsis}
               </p>
-              <button className="bg-white text-indigo-900 px-8 py-3 rounded-full font-bold hover:bg-slate-100 transition-colors shadow-lg">
-                <BookOpen/> Bắt đầu đọc
-              </button>
+              <div className="flex space-x-4">
+                <button className="bg-white text-indigo-900 px-8 py-3 rounded-full font-bold hover:bg-slate-100 transition-colors shadow-lg">
+                  Bắt đầu đọc
+                </button>
+              </div>
             </div>
 
             {/* Book Cover Right */}
