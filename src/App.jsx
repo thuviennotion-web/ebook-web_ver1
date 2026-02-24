@@ -127,7 +127,7 @@ const Header = ({ onSearch, navigateTo, currentView }) => {
             onClick={() => navigateTo('home')}
           >
             <BookOpen className="h-8 w-8 text-indigo-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">EbookVN</span>
+            <span className="ml-2 text-xl font-bold text-gray-900">thuviennotion</span>
           </div>
 
           {/* Desktop Search & Nav */}
@@ -248,7 +248,7 @@ const HomeView = ({ books, onBookSelect }) => {
             SÁCH NỔI BẬT TRONG TUẦN
           </span>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-            Đọc sách mọi lúc,<br/> mọi nơi với EbookVN
+            Đọc sách mọi lúc,<br/> mọi nơi với thuviennotion
           </h1>
           <p className="text-indigo-100 text-lg mb-8 max-w-xl">
             Khám phá hàng ngàn cuốn sách hấp dẫn thuộc mọi thể loại. Đăng ký ngay hôm nay để nhận ưu đãi đọc sách miễn phí 30 ngày.
@@ -609,10 +609,10 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <BookOpen className="h-6 w-6 text-indigo-600" />
-              <span className="ml-2 text-lg font-bold text-gray-900">EbookVN</span>
+              <span className="ml-2 text-lg font-bold text-gray-900">thuviennotion</span>
             </div>
             <p className="text-gray-500 text-sm">
-              &copy; 2024 EbookVN. Mọi quyền được bảo lưu.
+              &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
             </p>
           </div>
         </footer>
