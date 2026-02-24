@@ -26,9 +26,10 @@ const MOCK_BOOKS = [
     epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", 
     pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs",  
     shopeeLink: "https://s.shopee.vn/60L7wsDqsh", 
-    cover: "https://github.com/user-attachments/assets/f2e2346f-15d7-4c0a-8102-c70f80d39fef?q=80&w=800&auto=format&fit=crop",
+    // Sửa lại link ảnh cover thành link tuyệt đối thay vì link cục bộ
+    cover: "https://github.com/thuviennotion-web/ebook-web_ver1/issues/1#issue-3984480310?q=80&w=800&auto=format&fit=crop",
     synopsis: "Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
-    content: "https://drive.google.com/file/d/1BWEwmGZ-Q4gayPEdj4MHe9aI6WE0ODq9/view?usp=sharing"
+    content: "Ngày nay, sức mạnh quân sự, kinh tế và chính trị được xây dựng trên nền tảng chip máy tính. Hầu như mọi thứ đều chạy trên các con chip, từ tên lửa đến lò vi sóng, đến cả ô tô, điện thoại thông minh, thị trường chứng khoán, thậm chí cả lưới điện. \n\n Gần đây, nước Mỹ đã thiết kế những con chip nhanh nhất và duy trì vị thế số một thế giới, nhưng lợi thế đó đang có nguy cơ suy yếu khi các đối thủ ở Đài Loan, Hàn Quốc và châu Âu nổi lên nắm quyền kiểm soát. Mỹ đã để các thành phần quan trọng của quá trình sản xuất chip vuột khỏi tầm kiểm soát, dẫn đến tình trạng thiếu chip trên toàn thế giới và cuộc chiến vi mạch nổ ra với đối thủ là Trung Quốc đang mong muốn thu hẹp khoảng cách. \n\n Trung Quốc đang chi nhiều tiền cho chip hơn bất kỳ sản phẩm nào khác, rót hàng tỷ đô la vào việc xây dựng chip, đe dọa tới ưu thế quân sự và sự thịnh vượng của nền kinh tế Mỹ. \n\n Con chip của thế kỷ 21 giống như dầu mỏ của thế kỷ 20, và vì thế, lịch sử của chất bán dẫn chính là lịch sử của thế kỷ 21. Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch."
   },
   {
     id: 2,
@@ -432,6 +433,8 @@ const LibraryView = ({ books, onBookSelect, onToggleWishlist }) => {
 };
 
 const BookDetailView = ({ book, onBack, onRead }) => {
+  const [copied, setCopied] = useState(false);
+
   if (!book) return (
     <div className="max-w-5xl mx-auto px-4 py-20 text-center text-gray-500">
       Đang tải dữ liệu sách...
@@ -463,16 +466,42 @@ const BookDetailView = ({ book, onBack, onRead }) => {
     }
   };
 
+  const handleShare = () => {
+    // Copy link hiện tại (đã bao gồm URL Hash) vào Clipboard
+    const textArea = document.createElement("textarea");
+    textArea.value = window.location.href;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Copy failed', err);
+    }
+    document.body.removeChild(textArea);
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      {/* Nút quay lại */}
-      <button 
-        onClick={onBack}
-        className="flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition-colors group w-max"
-      >
-        <ChevronLeft className="h-5 w-5 mr-1 group-hover:-translate-x-1 transition-transform" />
-        Quay lại
-      </button>
+      {/* Nút quay lại và Nút chia sẻ */}
+      <div className="flex justify-between items-center mb-6">
+        <button 
+          onClick={onBack}
+          className="flex items-center text-gray-500 hover:text-indigo-600 transition-colors group w-max"
+        >
+          <ChevronLeft className="h-5 w-5 mr-1 group-hover:-translate-x-1 transition-transform" />
+          Quay lại
+        </button>
+        
+        <button 
+          onClick={handleShare}
+          className={`flex items-center px-4 py-2 rounded-full text-sm font-bold transition-colors shadow-sm border ${copied ? 'bg-green-50 text-green-600 border-green-200' : 'bg-white text-indigo-600 border-indigo-100 hover:bg-indigo-50'}`}
+        >
+          <Share2 className="h-4 w-4 mr-2" />
+          {copied ? 'Đã sao chép Link!' : 'Chia sẻ cuốn sách này'}
+        </button>
+      </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="md:flex">
@@ -691,6 +720,33 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [booksData, setBooksData] = useState(MOCK_BOOKS);
 
+  // Cấu hình Routing bằng URL Hash để có thể copy & share link
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash.startsWith('/book/')) {
+        const id = parseInt(hash.replace('/book/', ''), 10);
+        setSelectedBookId(id);
+        setCurrentView('detail');
+      } else if (hash.startsWith('/read/')) {
+        const id = parseInt(hash.replace('/read/', ''), 10);
+        setSelectedBookId(id);
+        setCurrentView('reader');
+      } else if (hash === '/library') {
+        setCurrentView('library');
+      } else {
+        setCurrentView('home');
+        setSelectedBookId(null);
+      }
+    };
+
+    // Kích hoạt khi vừa load trang
+    handleHashChange();
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   // Lấy thông tin sách đang được chọn
   const selectedBook = useMemo(() => 
     booksData.find(b => b.id === selectedBookId) || null
@@ -726,20 +782,21 @@ export default function App() {
     setBooksData(prev => prev.map(b => 
       b.id === book.id ? { ...b, clicks: b.clicks + 1 } : b
     ));
-    setSelectedBookId(book.id);
-    setCurrentView('detail');
+    // Đổi url thay vì set state trực tiếp
+    window.location.hash = `/book/${book.id}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleReadBook = (book) => {
-    setSelectedBookId(book.id);
-    setCurrentView('reader');
+    window.location.hash = `/read/${book.id}`;
   };
 
   const navigateTo = (view) => {
-    setCurrentView(view);
     if (view === 'home') {
       setSearchQuery('');
+      window.location.hash = '/';
+    } else if (view === 'library') {
+      window.location.hash = '/library';
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -776,7 +833,7 @@ export default function App() {
       {currentView === 'detail' && (
         <BookDetailView 
           book={selectedBook} 
-          onBack={() => navigateTo('home')}
+          onBack={() => { window.location.hash = '/'; }}
           onRead={handleReadBook}
         />
       )}
@@ -784,7 +841,7 @@ export default function App() {
       {currentView === 'reader' && (
         <ReaderView 
           book={selectedBook} 
-          onBack={() => setCurrentView('detail')} 
+          onBack={() => { window.location.hash = `/book/${selectedBook.id}`; }} 
         />
       )}
 
