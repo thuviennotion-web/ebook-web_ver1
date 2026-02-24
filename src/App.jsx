@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { 
   BookOpen, Search, User, Star, ChevronLeft, 
-  Menu, X, Bookmark, Share2, Settings, Download 
+  Menu, X, Bookmark, Share2, Settings, Download,
+  Heart, Facebook
 } from 'lucide-react';
 
 // --- MOCK DATA ---
@@ -13,7 +14,7 @@ const MOCK_BOOKS = [
     title: "Nhà Giả Kim",
     author: "Paulo Coelho",
     category: "Tiểu thuyết",
-    rating: 4.9,
+    rating: 4.8,
     reviews: 12500,
     coverPrice: "79.000đ",
     publishDate: "15/04/1988",
@@ -150,13 +151,12 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
             className="flex items-center cursor-pointer" 
             onClick={() => navigateTo('home')}
           >
-            <BookOpen className="h-8 w-8 text-indigo-600" />
-            <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
+            <img src="stamp.png" alt="thuviennotion logo" className="h-12 w-12 object-contain" />
           </div>
 
           {/* Desktop Search & Nav */}
           <div className="hidden md:flex flex-1 items-center justify-center px-8">
-            {(currentView === 'home' || currentView === 'detail') && (
+            {(currentView === 'home' || currentView === 'detail' || currentView === 'library') && (
               <div className="relative w-full max-w-md">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-gray-400" />
@@ -174,7 +174,10 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
 
           {/* Desktop Right Icons */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className="text-gray-500 hover:text-indigo-600 font-medium transition-colors">
+            <button 
+              onClick={() => navigateTo('library')}
+              className={`font-medium transition-colors ${currentView === 'library' ? 'text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}`}
+            >
               Thư viện của tôi
             </button>
             <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 cursor-pointer hover:bg-indigo-200 transition-colors">
@@ -198,7 +201,7 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {(currentView === 'home' || currentView === 'detail') && (
+            {(currentView === 'home' || currentView === 'detail' || currentView === 'library') && (
               <div className="p-2">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -214,7 +217,12 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
                 </div>
               </div>
             )}
-            <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Thư viện của tôi</a>
+            <button 
+              onClick={() => { navigateTo('library'); setIsMobileMenuOpen(false); }}
+              className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
+            >
+              Thư viện của tôi
+            </button>
             <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Tài khoản</a>
           </div>
         </div>
@@ -223,7 +231,7 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
   );
 };
 
-const BookCard = ({ book, onClick }) => (
+const BookCard = ({ book, onClick, onToggleWishlist }) => (
   <div 
     className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full transform hover:-translate-y-1"
     onClick={() => onClick(book)}
@@ -243,17 +251,19 @@ const BookCard = ({ book, onClick }) => (
       <h3 className="text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-indigo-600 transition-colors">{book.title}</h3>
       <p className="text-sm text-gray-500 mt-1">{book.author}</p>
       
-      <div className="mt-auto pt-4 flex items-center justify-between">
-        <div className="flex items-center text-amber-400">
-          <Star className="h-4 w-4 fill-current" />
-          <span className="ml-1 text-sm font-medium text-gray-700">{book.rating}</span>
-        </div>
+      <div className="mt-auto pt-4 flex items-center justify-end">
+        <button 
+          onClick={(e) => { e.stopPropagation(); onToggleWishlist(book.id); }}
+          className={`flex items-center justify-center p-2 rounded-full transition-colors ${book.isWishlisted ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50'}`}
+        >
+          <Heart className={`h-5 w-5 ${book.isWishlisted ? 'fill-current' : ''}`} />
+        </button>
       </div>
     </div>
   </div>
 );
 
-const HomeView = ({ books, onBookSelect }) => {
+const HomeView = ({ books, onBookSelect, onToggleWishlist }) => {
   const [activeCategory, setActiveCategory] = useState("Tất cả");
   const [sortBy, setSortBy] = useState("popular");
 
@@ -303,7 +313,7 @@ const HomeView = ({ books, onBookSelect }) => {
               <p className="text-indigo-100/90 text-lg md:text-xl mb-8 max-w-xl line-clamp-3 leading-relaxed font-light">
                 {featuredBook.synopsis}
               </p>
-              <div className="flex space-x-4">
+               <div className="flex space-x-4">
                 <button className="bg-white text-indigo-900 px-8 py-3 rounded-full font-bold hover:bg-slate-100 transition-colors shadow-lg">
                   Bắt đầu đọc
                 </button>
@@ -378,7 +388,7 @@ const HomeView = ({ books, onBookSelect }) => {
         {filteredBooks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredBooks.map(book => (
-              <BookCard key={book.id} book={book} onClick={onBookSelect} />
+              <BookCard key={book.id} book={book} onClick={onBookSelect} onToggleWishlist={onToggleWishlist} />
             ))}
           </div>
         ) : (
@@ -389,6 +399,33 @@ const HomeView = ({ books, onBookSelect }) => {
           </div>
         )}
       </div>
+    </main>
+  );
+};
+
+const LibraryView = ({ books, onBookSelect, onToggleWishlist }) => {
+  const wishlistedBooks = books.filter(b => b.isWishlisted);
+
+  return (
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <div className="flex items-center mb-8">
+        <Heart className="h-8 w-8 text-red-500 mr-3 fill-current" />
+        <h2 className="text-3xl font-bold text-gray-900">Thư viện của tôi</h2>
+      </div>
+
+      {wishlistedBooks.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {wishlistedBooks.map(book => (
+            <BookCard key={book.id} book={book} onClick={onBookSelect} onToggleWishlist={onToggleWishlist} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <Bookmark className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-xl font-medium text-gray-900">Thư viện trống</h3>
+          <p className="text-gray-500 mt-2">Bạn chưa thêm cuốn sách nào vào thư viện. Hãy khám phá và thêm những cuốn sách yêu thích nhé!</p>
+        </div>
+      )}
     </main>
   );
 };
@@ -613,7 +650,7 @@ const ReaderView = ({ book, onBack }) => {
 // --- MAIN APP COMPONENT ---
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'detail', 'reader'
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'detail', 'reader', 'library'
   const [selectedBookId, setSelectedBookId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [booksData, setBooksData] = useState(MOCK_BOOKS);
@@ -636,10 +673,16 @@ export default function App() {
   const handleSearchSubmit = (query) => {
     setSearchQuery(query);
     // Tự động chuyển về trang chủ nếu đang tìm kiếm trong màn hình khác
-    if (currentView !== 'home' && query.trim() !== '') {
+    if (currentView !== 'home' && currentView !== 'library' && query.trim() !== '') {
       setCurrentView('home');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  };
+
+  const handleToggleWishlist = (bookId) => {
+    setBooksData(prev => prev.map(b => 
+      b.id === bookId ? { ...b, isWishlisted: !b.isWishlisted } : b
+    ));
   };
 
   const handleBookSelect = (book) => {
@@ -657,9 +700,11 @@ export default function App() {
     setCurrentView('reader');
   };
 
-  const navigateToHome = () => {
-    setCurrentView('home');
-    setSearchQuery('');
+  const navigateTo = (view) => {
+    setCurrentView(view);
+    if (view === 'home') {
+      setSearchQuery('');
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -670,7 +715,7 @@ export default function App() {
         <Header 
           onSearch={handleSearchSubmit} 
           searchQuery={searchQuery}
-          navigateTo={navigateToHome} 
+          navigateTo={navigateTo} 
           currentView={currentView}
         />
       )}
@@ -680,13 +725,22 @@ export default function App() {
         <HomeView 
           books={displayedBooks} 
           onBookSelect={handleBookSelect} 
+          onToggleWishlist={handleToggleWishlist}
+        />
+      )}
+
+      {currentView === 'library' && (
+        <LibraryView 
+          books={booksData} 
+          onBookSelect={handleBookSelect} 
+          onToggleWishlist={handleToggleWishlist}
         />
       )}
 
       {currentView === 'detail' && (
         <BookDetailView 
           book={selectedBook} 
-          onBack={navigateToHome}
+          onBack={() => navigateTo('home')}
           onRead={handleReadBook}
         />
       )}
@@ -701,14 +755,19 @@ export default function App() {
       {/* Footer đơn giản (ẩn trong Reader) */}
       {currentView !== 'reader' && (
         <footer className="bg-white border-t border-gray-200 mt-16 py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center mb-4 md:mb-0">
-              <BookOpen className="h-6 w-6 text-indigo-600" />
-              <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
+              <img src="stamp.png" alt="thuviennotion logo" className="h-10 w-10 object-contain mr-3" />
+              <p className="text-gray-500 text-sm">
+                &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
+              </p>
             </div>
-            <p className="text-gray-500 text-sm">
-              &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
-            </p>
+            <div className="flex items-center">
+              <a href="https://facebook.com/thuviennotion" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-400 hover:text-blue-600 transition-colors">
+                <Facebook className="h-6 w-6 mr-2" />
+                <span className="text-sm font-medium">Facebook</span>
+              </a>
+            </div>
           </div>
         </footer>
       )}
