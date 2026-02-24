@@ -760,7 +760,7 @@ export default function App() {
             <div className="flex items-center mb-4 md:mb-0">
               <img src="stamp.png" alt="thuviennotion logo" className="h-10 w-10 object-contain" />
             <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
-              <p className="text-gray-500 text-sm">
+              <p className="ml-2 text-gray-500 text-sm">
                 &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
               </p>
             </div>
