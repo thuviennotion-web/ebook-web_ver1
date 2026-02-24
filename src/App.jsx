@@ -11,24 +11,24 @@ const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa 
 const MOCK_BOOKS = [
   {
     id: 1,
-    title: "Nhà Giả Kim",
-    author: "Paulo Coelho",
-    category: "Tiểu thuyết",
+    title: "CHIP WAR - Cuộc Chiến Vi Mạch",
+    author: "Chris Miller",
+    category: "Kinh tế",
     rating: 4.8,
     reviews: 12500,
-    coverPrice: "79.000đ",
-    publishDate: "15/04/1988",
+    coverPrice: "300.000đ",
+    publishDate: "18/12/2024",
     postDate: "2026-02-24",
     clicks: 1250,
-    publisher: "NXB Văn Học",
+    publisher: "NXB Thế Giới",
     distributor: "Nhã Nam",
-    pages: 227,
-    epubLink: "https://drive.google.com/...", // Sửa link Google Drive của bạn ở đây
-    pdfLink: "https://drive.google.com/...",  // Sửa link Google Drive của bạn ở đây
-    shopeeLink: "https://shopee.vn/...", // Sửa link Shopee Affiliate của bạn ở đây
-    cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop",
-    synopsis: "Tất cả những trải nghiệm trong chuyến phiêu du theo đuổi vận mệnh của mình đã giúp Santiago thấu hiểu được ý nghĩa sâu xa nhất của hạnh phúc, hòa hợp với vũ trụ và con người. Nhà giả kim là một cuốn sách dành cho những ai đã đánh mất ước mơ hoặc chưa bao giờ có nó.",
-    content: "Chàng chăn cừu Santiago có một giấc mơ kỳ lạ lặp đi lặp lại. Cậu mơ thấy một đứa trẻ chơi với bầy cừu của mình, rồi dẫn cậu đến Kim tự tháp Ai Cập và chỉ cho cậu một kho báu bị giấu kín...\n\n(Đây là nội dung mô phỏng cho trình đọc sách. Trong thực tế, nội dung này sẽ được tải từ database hoặc file epub/pdf.)\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nPhần tiếp theo của câu chuyện tiếp tục khám phá sa mạc mênh mông..."
+    pages: 480,
+    epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", // Sửa link Google Drive của bạn ở đây
+    pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs",  // Sửa link Google Drive của bạn ở đây
+    shopeeLink: "https://s.shopee.vn/60L7wsDqsh", // Sửa link Shopee Affiliate của bạn ở đây
+    cover: "images/cover-1.jpg?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
+    content: "Ngày nay, sức mạnh quân sự, kinh tế và chính trị được xây dựng trên nền tảng chip máy tính. Hầu như mọi thứ đều chạy trên các con chip, từ tên lửa đến lò vi sóng, đến cả ô tô, điện thoại thông minh, thị trường chứng khoán, thậm chí cả lưới điện. \n\n Gần đây, nước Mỹ đã thiết kế những con chip nhanh nhất và duy trì vị thế số một thế giới, nhưng lợi thế đó đang có nguy cơ suy yếu khi các đối thủ ở Đài Loan, Hàn Quốc và châu Âu nổi lên nắm quyền kiểm soát. Mỹ đã để các thành phần quan trọng của quá trình sản xuất chip vuột khỏi tầm kiểm soát, dẫn đến tình trạng thiếu chip trên toàn thế giới và cuộc chiến vi mạch nổ ra với đối thủ là Trung Quốc đang mong muốn thu hẹp khoảng cách. \n\n Trung Quốc đang chi nhiều tiền cho chip hơn bất kỳ sản phẩm nào khác, rót hàng tỷ đô la vào việc xây dựng chip, đe dọa tới ưu thế quân sự và sự thịnh vượng của nền kinh tế Mỹ. \n\n Con chip của thế kỷ 21 giống như dầu mỏ của thế kỷ 20, và vì thế, lịch sử của chất bán dẫn chính là lịch sử của thế kỷ 21. Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch."
   },
   {
     id: 2,
