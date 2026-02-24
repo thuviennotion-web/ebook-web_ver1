@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // --- MOCK DATA ---
-const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi", "Kinh tế"];
+const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi"];
 
 const MOCK_BOOKS = [
   {
@@ -24,12 +24,12 @@ const MOCK_BOOKS = [
     distributor: "Nhã Nam",
     pages: 480,
     epubLink: "https://drive.google.com/open?id=1Tpz-Qhb29H6IFAdLnl6d8Ywwb45NTgRA&usp=drive_fs", 
-    pdfLink: "https://drive.google.com/open?id=10HVtwz3Ht8i0zjttn4D0asbYjnuYudBS&usp=drive_fs",  
+    pdfLink: "https://drive.google.com/open?id=17EBuhml0L1HsAgoO0jRFT_8Y1xXvjyHt&usp=drive_fs", // Link dùng để tải về
+    pdfPreviewLink: "https://drive.google.com/file/d/1WLhzZP1O0UVNAHMGajyc9WKsLJSqHdvk/view?usp=sharing", // Link dùng cho bản xem trước (đọc thử)
     shopeeLink: "https://s.shopee.vn/60L7wsDqsh", 
-    // Sửa lại link ảnh cover thành link tuyệt đối thay vì link cục bộ
     cover: "https://github.com/user-attachments/assets/0c2cd8a2-ada9-45dd-9315-ea7dbcf6e82f?q=80&w=800&auto=format&fit=crop",
     synopsis: "Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch.",
-    content: "https://drive.google.com/open?id=10HVtwz3Ht8i0zjttn4D0asbYjnuYudBS&usp=drive_fs"
+    content: "Ngày nay, sức mạnh quân sự, kinh tế và chính trị được xây dựng trên nền tảng chip máy tính. Hầu như mọi thứ đều chạy trên các con chip, từ tên lửa đến lò vi sóng, đến cả ô tô, điện thoại thông minh, thị trường chứng khoán, thậm chí cả lưới điện. \n\n Gần đây, nước Mỹ đã thiết kế những con chip nhanh nhất và duy trì vị thế số một thế giới, nhưng lợi thế đó đang có nguy cơ suy yếu khi các đối thủ ở Đài Loan, Hàn Quốc và châu Âu nổi lên nắm quyền kiểm soát. Mỹ đã để các thành phần quan trọng của quá trình sản xuất chip vuột khỏi tầm kiểm soát, dẫn đến tình trạng thiếu chip trên toàn thế giới và cuộc chiến vi mạch nổ ra với đối thủ là Trung Quốc đang mong muốn thu hẹp khoảng cách. \n\n Trung Quốc đang chi nhiều tiền cho chip hơn bất kỳ sản phẩm nào khác, rót hàng tỷ đô la vào việc xây dựng chip, đe dọa tới ưu thế quân sự và sự thịnh vượng của nền kinh tế Mỹ. \n\n Con chip của thế kỷ 21 giống như dầu mỏ của thế kỷ 20, và vì thế, lịch sử của chất bán dẫn chính là lịch sử của thế kỷ 21. Cuộc chiến vi mạch được xem là biên niên sử về cuộc chiến kéo dài hàng thập niên để kiểm soát thứ đang nổi lên là tài nguyên quan trọng nhất nhưng lại khan hiếm: công nghệ vi mạch."
   },
   {
     id: 2,
@@ -47,6 +47,7 @@ const MOCK_BOOKS = [
     pages: 320,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
+    pdfPreviewLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
     cover: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=800&auto=format&fit=crop",
     synopsis: "Cuốn sách đưa ra các lời khuyên về cách cư xử, ứng xử và giao tiếp với mọi người để đạt được thành công trong cuộc sống.",
@@ -68,6 +69,7 @@ const MOCK_BOOKS = [
     pages: 512,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
+    pdfPreviewLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
     cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=800&auto=format&fit=crop",
     synopsis: "Khám phá toàn bộ lịch sử loài người, từ những loài vượn người đầu tiên tiến hóa trên Trái đất cho đến những bước tiến mang tính cách mạng của thế kỷ 21.",
@@ -89,6 +91,7 @@ const MOCK_BOOKS = [
     pages: 480,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
+    pdfPreviewLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
     cover: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=800&auto=format&fit=crop",
     synopsis: "Một cuộc hành trình vĩ đại khám phá vũ trụ bao la, từ những vì sao xa xôi đến nguồn gốc của sự sống trên Trái đất.",
@@ -110,6 +113,7 @@ const MOCK_BOOKS = [
     pages: 148,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
+    pdfPreviewLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
     cover: "https://images.unsplash.com/photo-1596422846543-75c6fc197f0a?q=80&w=800&auto=format&fit=crop",
     synopsis: "Câu chuyện kể về cuộc phiêu lưu của chú Dế Mèn qua thế giới loài vật đầy màu sắc, qua đó rút ra nhiều bài học quý giá về tình bạn và lẽ sống.",
@@ -131,6 +135,7 @@ const MOCK_BOOKS = [
     pages: 612,
     epubLink: "https://drive.google.com/...",
     pdfLink: "https://drive.google.com/...",
+    pdfPreviewLink: "https://drive.google.com/...",
     shopeeLink: "https://shopee.vn/...",
     cover: "https://images.unsplash.com/photo-1555448248-2571daf6344b?q=80&w=800&auto=format&fit=crop",
     synopsis: "Khám phá hai hệ thống tư duy chi phối cách chúng ta suy nghĩ: Hệ thống 1 nhanh, bản năng và cảm xúc; Hệ thống 2 chậm, có logic và tính toán hơn.",
@@ -618,6 +623,9 @@ const DetailItem = ({ label, value }) => (
 const ReaderView = ({ book, onBack }) => {
   if (!book) return null;
 
+  // Sử dụng link đọc thử (nếu không có thì dùng link tải PDF làm mặc định)
+  const targetPdfLink = book.pdfPreviewLink || book.pdfLink;
+
   // Hàm chuyển đổi link Google Drive từ view/open sang dạng embed (preview)
   const getEmbedLink = (url) => {
     if (!url) return '';
@@ -630,7 +638,7 @@ const ReaderView = ({ book, onBack }) => {
     return url;
   };
 
-  const embedUrl = getEmbedLink(book.pdfLink);
+  const embedUrl = getEmbedLink(targetPdfLink);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-gray-100">
@@ -653,12 +661,12 @@ const ReaderView = ({ book, onBack }) => {
         
         <div className="flex items-center">
           <button 
-            onClick={() => window.open(book.pdfLink, '_blank')}
+            onClick={() => window.open(targetPdfLink, '_blank')}
             className="flex items-center px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-sm font-medium transition-colors"
           >
             <Download className="h-4 w-4 mr-1.5" />
             <span className="hidden sm:inline">Mở PDF trong tab mới</span>
-            <span className="sm:hidden">Tải</span>
+            <span className="sm:hidden">Mở</span>
           </button>
         </div>
       </div>
