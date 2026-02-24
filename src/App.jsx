@@ -151,7 +151,7 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
             onClick={() => navigateTo('home')}
           >
             <BookOpen className="h-8 w-8 text-indigo-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">thuviennotion</span>
+            <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
           </div>
 
           {/* Desktop Search & Nav */}
@@ -702,7 +702,7 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <BookOpen className="h-6 w-6 text-indigo-600" />
-              <span className="ml-2 text-lg font-bold text-gray-900">thuviennotion</span>
+              <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span>
             </div>
             <p className="text-gray-500 text-sm">
               &copy; 2026 thuviennotion. Mọi quyền được bảo lưu.
