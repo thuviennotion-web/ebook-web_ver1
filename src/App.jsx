@@ -1,0 +1,622 @@
+import React, { useState, useMemo } from 'react';
+import { 
+  BookOpen, Search, User, Star, ChevronLeft, 
+  Menu, X, Bookmark, Share2, Settings, Download 
+} from 'lucide-react';
+
+// --- MOCK DATA ---
+const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi"];
+
+const MOCK_BOOKS = [
+  {
+    id: 1,
+    title: "Nhà Giả Kim",
+    author: "Paulo Coelho",
+    category: "Tiểu thuyết",
+    rating: 4.8,
+    reviews: 12500,
+    price: "Miễn phí",
+    coverPrice: "79.000đ",
+    publishDate: "1988",
+    epubLink: "https://drive.google.com/...", // Sửa link Google Drive của bạn ở đây
+    pdfLink: "https://drive.google.com/...",  // Sửa link Google Drive của bạn ở đây
+    shopeeLink: "https://shopee.vn/...", // Sửa link Shopee Affiliate của bạn ở đây
+    cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Tất cả những trải nghiệm trong chuyến phiêu du theo đuổi vận mệnh của mình đã giúp Santiago thấu hiểu được ý nghĩa sâu xa nhất của hạnh phúc, hòa hợp với vũ trụ và con người. Nhà giả kim là một cuốn sách dành cho những ai đã đánh mất ước mơ hoặc chưa bao giờ có nó.",
+    content: "Chàng chăn cừu Santiago có một giấc mơ kỳ lạ lặp đi lặp lại. Cậu mơ thấy một đứa trẻ chơi với bầy cừu của mình, rồi dẫn cậu đến Kim tự tháp Ai Cập và chỉ cho cậu một kho báu bị giấu kín...\n\n(Đây là nội dung mô phỏng cho trình đọc sách. Trong thực tế, nội dung này sẽ được tải từ database hoặc file epub/pdf.)\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nPhần tiếp theo của câu chuyện tiếp tục khám phá sa mạc mênh mông..."
+  },
+  {
+    id: 2,
+    title: "Đắc Nhân Tâm",
+    author: "Dale Carnegie",
+    category: "Kỹ năng sống",
+    rating: 4.9,
+    reviews: 32000,
+    price: "49.000đ",
+    coverPrice: "86.000đ",
+    publishDate: "1936",
+    epubLink: "https://drive.google.com/...",
+    pdfLink: "https://drive.google.com/...",
+    shopeeLink: "https://shopee.vn/...",
+    cover: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Cuốn sách đưa ra các lời khuyên về cách cư xử, ứng xử và giao tiếp với mọi người để đạt được thành công trong cuộc sống.",
+    content: "Chương 1: Nghệ thuật ứng xử căn bản...\n\nNguyên tắc 1: Không chỉ trích, oán trách hay than phiền. Những người hay chỉ trích thường nhận lại sự phản kháng và thù hận từ người khác..."
+  },
+  {
+    id: 3,
+    title: "Sapiens: Lược Sử Loài Người",
+    author: "Yuval Noah Harari",
+    category: "Lịch sử",
+    rating: 4.7,
+    reviews: 8900,
+    price: "89.000đ",
+    coverPrice: "250.000đ",
+    publishDate: "2011",
+    epubLink: "https://drive.google.com/...",
+    pdfLink: "https://drive.google.com/...",
+    shopeeLink: "https://shopee.vn/...",
+    cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Khám phá toàn bộ lịch sử loài người, từ những loài vượn người đầu tiên tiến hóa trên Trái đất cho đến những bước tiến mang tính cách mạng của thế kỷ 21.",
+    content: "Khoảng 70.000 năm trước, các sinh vật thuộc loài Homo sapiens bắt đầu hình thành nên các cấu trúc phức tạp gọi là văn hóa. Sự phát triển tiếp theo của các nền văn hóa con người được gọi là lịch sử..."
+  },
+  {
+    id: 4,
+    title: "Vũ Trụ",
+    author: "Carl Sagan",
+    category: "Khoa học",
+    rating: 4.8,
+    reviews: 5400,
+    price: "Miễn phí",
+    coverPrice: "185.000đ",
+    publishDate: "1980",
+    epubLink: "https://drive.google.com/...",
+    pdfLink: "https://drive.google.com/...",
+    shopeeLink: "https://shopee.vn/...",
+    cover: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Một cuộc hành trình vĩ đại khám phá vũ trụ bao la, từ những vì sao xa xôi đến nguồn gốc của sự sống trên Trái đất.",
+    content: "Vũ trụ là tất cả những gì đã, đang và sẽ tồn tại. Những suy ngẫm về vũ trụ thường làm chúng ta cảm thấy nhỏ bé, nhưng đồng thời cũng khơi dậy sự tò mò mãnh liệt..."
+  },
+  {
+    id: 5,
+    title: "Dế Mèn Phiêu Lưu Ký",
+    author: "Tô Hoài",
+    category: "Thiếu nhi",
+    rating: 4.9,
+    reviews: 15000,
+    price: "Miễn phí",
+    coverPrice: "55.000đ",
+    publishDate: "1941",
+    epubLink: "https://drive.google.com/...",
+    pdfLink: "https://drive.google.com/...",
+    shopeeLink: "https://shopee.vn/...",
+    cover: "https://images.unsplash.com/photo-1596422846543-75c6fc197f0a?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Câu chuyện kể về cuộc phiêu lưu của chú Dế Mèn qua thế giới loài vật đầy màu sắc, qua đó rút ra nhiều bài học quý giá về tình bạn và lẽ sống.",
+    content: "Tôi sống độc lập từ thuở bé. Ấy là tục lệ lâu đời trong họ dế chúng tôi. Vả lại, lúc bấy giờ tôi còn là một chàng dế thanh niên cường tráng..."
+  },
+  {
+    id: 6,
+    title: "Tư Duy Nhanh Và Chậm",
+    author: "Daniel Kahneman",
+    category: "Kỹ năng sống",
+    rating: 4.6,
+    reviews: 7200,
+    price: "65.000đ",
+    coverPrice: "219.000đ",
+    publishDate: "2011",
+    epubLink: "https://drive.google.com/...",
+    pdfLink: "https://drive.google.com/...",
+    shopeeLink: "https://shopee.vn/...",
+    cover: "https://images.unsplash.com/photo-1555448248-2571daf6344b?q=80&w=800&auto=format&fit=crop",
+    synopsis: "Khám phá hai hệ thống tư duy chi phối cách chúng ta suy nghĩ: Hệ thống 1 nhanh, bản năng và cảm xúc; Hệ thống 2 chậm, có logic và tính toán hơn.",
+    content: "Hệ thống 1 hoạt động tự động và nhanh chóng, với rất ít hoặc không có nỗ lực và không có cảm giác kiểm soát tự nguyện..."
+  },
+];
+
+// --- COMPONENTS ---
+
+const Header = ({ onSearch, navigateTo, currentView }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  return (
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div 
+            className="flex items-center cursor-pointer" 
+            onClick={() => navigateTo('home')}
+          >
+            <BookOpen className="h-8 w-8 text-indigo-600" />
+            <span className="ml-2 text-xl font-bold text-gray-900">EbookVN</span>
+          </div>
+
+          {/* Desktop Search & Nav */}
+          <div className="hidden md:flex flex-1 items-center justify-center px-8">
+            {currentView === 'home' && (
+              <div className="relative w-full max-w-md">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-full leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors duration-200"
+                  placeholder="Tìm kiếm sách, tác giả..."
+                  onChange={(e) => onSearch(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Right Icons */}
+          <div className="hidden md:flex items-center space-x-4">
+            <button className="text-gray-500 hover:text-indigo-600 font-medium transition-colors">
+              Thư viện của tôi
+            </button>
+            <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 cursor-pointer hover:bg-indigo-200 transition-colors">
+              <User className="h-5 w-5" />
+            </div>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="flex items-center md:hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-gray-500 hover:text-gray-900 focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {currentView === 'home' && (
+              <div className="p-2">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:bg-white sm:text-sm"
+                    placeholder="Tìm kiếm..."
+                    onChange={(e) => onSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+            <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Thư viện của tôi</a>
+            <a href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">Tài khoản</a>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
+
+const BookCard = ({ book, onClick }) => (
+  <div 
+    className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full transform hover:-translate-y-1"
+    onClick={() => onClick(book)}
+  >
+    <div className="relative h-64 w-full overflow-hidden bg-gray-100">
+      <img 
+        src={book.cover} 
+        alt={book.title} 
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+      />
+      <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+        {book.category}
+      </div>
+    </div>
+    <div className="p-4 flex flex-col flex-grow">
+      <h3 className="text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-indigo-600 transition-colors">{book.title}</h3>
+      <p className="text-sm text-gray-500 mt-1">{book.author}</p>
+      
+      <div className="mt-auto pt-4 flex items-center justify-between">
+        <div className="flex items-center text-amber-400">
+          <Star className="h-4 w-4 fill-current" />
+          <span className="ml-1 text-sm font-medium text-gray-700">{book.rating}</span>
+        </div>
+        <span className={`text-sm font-bold ${book.price === 'Miễn phí' ? 'text-green-600' : 'text-indigo-600'}`}>
+          {book.price}
+        </span>
+      </div>
+    </div>
+  </div>
+);
+
+const HomeView = ({ books, onBookSelect }) => {
+  const [activeCategory, setActiveCategory] = useState("Tất cả");
+
+  const filteredBooks = useMemo(() => {
+    if (activeCategory === "Tất cả") return books;
+    return books.filter(book => book.category === activeCategory);
+  }, [books, activeCategory]);
+
+  return (
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg overflow-hidden mb-12 relative">
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="relative z-10 px-6 py-12 md:py-16 md:px-12 lg:w-2/3 flex flex-col items-start">
+          <span className="inline-block py-1 px-3 rounded-full bg-white bg-opacity-20 text-white text-xs font-semibold tracking-wider mb-4 border border-white border-opacity-30 backdrop-blur-sm">
+            SÁCH NỔI BẬT TRONG TUẦN
+          </span>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
+            Đọc sách mọi lúc,<br/> mọi nơi với EbookVN
+          </h1>
+          <p className="text-indigo-100 text-lg mb-8 max-w-xl">
+            Khám phá hàng ngàn cuốn sách hấp dẫn thuộc mọi thể loại. Đăng ký ngay hôm nay để nhận ưu đãi đọc sách miễn phí 30 ngày.
+          </p>
+          <button className="bg-white text-indigo-600 px-6 py-3 rounded-full font-bold hover:bg-indigo-50 transition-colors shadow-md">
+            Khám phá ngay
+          </button>
+        </div>
+        <div className="hidden lg:block absolute right-0 bottom-0 top-0 w-1/3">
+          <img 
+            src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800&auto=format&fit=crop" 
+            alt="Hero background" 
+            className="w-full h-full object-cover opacity-60 mix-blend-overlay"
+          />
+        </div>
+      </div>
+
+      {/* Categories */}
+      <div className="mb-8 overflow-x-auto pb-4 hide-scrollbar">
+        <div className="flex space-x-2">
+          {CATEGORIES.map(category => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                activeCategory === category
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-indigo-600'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Book Grid */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+          {activeCategory === "Tất cả" ? "Thịnh hành nhất" : `Sách ${activeCategory}`}
+          <span className="ml-3 text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+            {filteredBooks.length} cuốn
+          </span>
+        </h2>
+        
+        {filteredBooks.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {filteredBooks.map(book => (
+              <BookCard key={book.id} book={book} onClick={onBookSelect} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-gray-900">Không tìm thấy sách</h3>
+            <p className="text-gray-500 mt-2">Vui lòng thử từ khóa hoặc danh mục khác.</p>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+};
+
+const BookDetailView = ({ book, onBack, onRead }) => {
+  if (!book) return null;
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <button 
+        onClick={onBack}
+        className="flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition-colors group w-max"
+      >
+        <ChevronLeft className="h-5 w-5 mr-1 group-hover:-translate-x-1 transition-transform" />
+        Quay lại
+      </button>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="md:flex">
+          {/* Cover & Quick Actions */}
+          <div className="md:w-1/3 p-8 bg-gray-50 flex flex-col items-center border-r border-gray-100">
+            <div className="relative w-48 sm:w-64 aspect-[2/3] rounded-lg shadow-2xl overflow-hidden mb-8 group">
+              <img 
+                src={book.cover} 
+                alt={book.title} 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                 <button onClick={() => onRead(book)} className="opacity-0 group-hover:opacity-100 bg-white text-gray-900 p-3 rounded-full transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-lg">
+                   <BookOpen className="h-6 w-6" />
+                 </button>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => onRead(book)}
+              className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition-colors shadow-md flex justify-center items-center mb-3"
+            >
+              <BookOpen className="h-5 w-5 mr-2" />
+              Đọc thử
+            </button>
+            
+            <div className="flex w-full space-x-3">
+              <a 
+                href={book.epubLink || '#'} 
+                onClick={() => {
+                  if (book.shopeeLink) {
+                    window.open(book.shopeeLink, '_blank');
+                  }
+                }}
+                className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 transition-colors flex justify-center items-center"
+              >
+                <Download className="h-5 w-5 mr-1.5" />
+                EPUB
+              </a>
+              <a 
+                href={book.pdfLink || '#'} 
+                onClick={() => {
+                  if (book.shopeeLink) {
+                    window.open(book.shopeeLink, '_blank');
+                  }
+                }}
+                className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 transition-colors flex justify-center items-center"
+              >
+                <Download className="h-5 w-5 mr-1.5" />
+                PDF
+              </a>
+            </div>
+          </div>
+
+          {/* Book Info */}
+          <div className="md:w-2/3 p-8 lg:p-12">
+            <div className="mb-2 flex items-center space-x-2">
+              <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wide">
+                {book.category}
+              </span>
+              <span className={`text-xs font-bold px-2.5 py-1 rounded-md border ${book.price === 'Miễn phí' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-700 border-gray-200'}`}>
+                {book.price}
+              </span>
+            </div>
+            
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 leading-tight">
+              {book.title}
+            </h1>
+            <p className="text-xl text-gray-600 font-medium mb-6">bởi <span className="text-indigo-600 hover:underline cursor-pointer">{book.author}</span></p>
+            
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-8 pb-8 border-b border-gray-100">
+              <div className="flex flex-col">
+                <div className="flex items-center text-amber-400 text-lg font-bold">
+                  <span>{book.rating}</span>
+                  <Star className="h-5 w-5 fill-current ml-1" />
+                </div>
+                <span className="text-sm text-gray-500 mt-1">{book.reviews.toLocaleString()} Đánh giá</span>
+              </div>
+              <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-gray-900">{book.coverPrice || 'N/A'}</span>
+                <span className="text-sm text-gray-500 mt-1">Giá bìa</span>
+              </div>
+              <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-gray-900">{book.publishDate || 'N/A'}</span>
+                <span className="text-sm text-gray-500 mt-1">Xuất bản</span>
+              </div>
+              <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-gray-900">340</span>
+                <span className="text-sm text-gray-500 mt-1">Trang</span>
+              </div>
+              <div className="hidden md:block h-10 w-px bg-gray-200"></div>
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-gray-900">Tiếng Việt</span>
+                <span className="text-sm text-gray-500 mt-1">Ngôn ngữ</span>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Giới thiệu sách</h3>
+              <p className="text-gray-600 leading-relaxed whitespace-pre-line text-lg">
+                {book.synopsis}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ReaderView = ({ book, onBack }) => {
+  const [fontSize, setFontSize] = useState(18);
+  const [theme, setTheme] = useState('light'); // light, sepia, dark
+  const [showControls, setShowControls] = useState(true);
+
+  if (!book) return null;
+
+  const themes = {
+    light: 'bg-white text-gray-900',
+    sepia: 'bg-[#f4ecd8] text-[#5b4636]',
+    dark: 'bg-gray-900 text-gray-300'
+  };
+
+  return (
+    <div className={`fixed inset-0 z-50 flex flex-col transition-colors duration-300 ${themes[theme]}`}>
+      {/* Reader Header (Auto-hides) */}
+      <div className={`transform transition-transform duration-300 ${showControls ? 'translate-y-0' : '-translate-y-full'} bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between absolute top-0 left-0 right-0 z-10`}>
+        <div className="flex items-center">
+          <button 
+            onClick={onBack}
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors mr-2"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <div>
+            <h2 className="font-bold text-sm md:text-base text-gray-900 dark:text-white line-clamp-1">{book.title}</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">{book.author}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Theme controls */}
+          <div className="hidden sm:flex items-center space-x-2 mr-4 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
+            <button onClick={() => setTheme('light')} className={`w-6 h-6 rounded-md bg-white border border-gray-300 ${theme==='light' ? 'ring-2 ring-indigo-500' : ''}`}></button>
+            <button onClick={() => setTheme('sepia')} className={`w-6 h-6 rounded-md bg-[#f4ecd8] border border-[#d3c6a6] ${theme==='sepia' ? 'ring-2 ring-indigo-500' : ''}`}></button>
+            <button onClick={() => setTheme('dark')} className={`w-6 h-6 rounded-md bg-gray-900 border border-gray-600 ${theme==='dark' ? 'ring-2 ring-indigo-500' : ''}`}></button>
+          </div>
+
+          {/* Font size controls */}
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <button 
+              onClick={() => setFontSize(prev => Math.max(14, prev - 2))}
+              className="p-1.5 sm:p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium"
+            >
+              A-
+            </button>
+            <button 
+              onClick={() => setFontSize(prev => Math.min(28, prev + 2))}
+              className="p-1.5 sm:p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium text-lg"
+            >
+              A+
+            </button>
+          </div>
+          
+          <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+            <Settings className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Reader Content Area */}
+      <div 
+        className="flex-1 overflow-y-auto pt-20 pb-12 px-4 sm:px-8 md:px-16 lg:px-32 scroll-smooth cursor-pointer"
+        onClick={() => setShowControls(!showControls)}
+      >
+        <div 
+          className="max-w-3xl mx-auto font-serif leading-relaxed"
+          style={{ fontSize: `${fontSize}px` }}
+        >
+          <h1 className="text-3xl md:text-5xl font-bold mb-8 text-center mt-10" style={{ fontSize: `${fontSize * 1.5}px` }}>
+            {book.title}
+          </h1>
+          <div className="text-center text-gray-500 mb-16 italic">
+            Tác giả: {book.author}
+          </div>
+          
+          <div className="whitespace-pre-line text-justify">
+            {book.content}
+            <br/><br/><br/>
+            <p className="text-center italic opacity-50">-- Hết phần xem thử --</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Reader Footer (Progress) */}
+      <div className={`transform transition-transform duration-300 ${showControls ? 'translate-y-0' : 'translate-y-full'} absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-[0_-1px_3px_rgba(0,0,0,0.1)] dark:border-t dark:border-gray-700 p-3 flex items-center justify-center`}>
+        <div className="w-full max-w-md flex items-center space-x-4 text-xs text-gray-500">
+          <span>1%</span>
+          <div className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+            <div className="h-full bg-indigo-500 w-[1%]"></div>
+          </div>
+          <span>100%</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- MAIN APP COMPONENT ---
+
+export default function App() {
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'detail', 'reader'
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Lọc sách theo từ khóa tìm kiếm
+  const displayedBooks = useMemo(() => {
+    if (!searchQuery.trim()) return MOCK_BOOKS;
+    const lowerQuery = searchQuery.toLowerCase();
+    return MOCK_BOOKS.filter(book => 
+      book.title.toLowerCase().includes(lowerQuery) || 
+      book.author.toLowerCase().includes(lowerQuery)
+    );
+  }, [searchQuery]);
+
+  const handleBookSelect = (book) => {
+    setSelectedBook(book);
+    setCurrentView('detail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleReadBook = (book) => {
+    setSelectedBook(book);
+    setCurrentView('reader');
+  };
+
+  const navigateToHome = () => {
+    setCurrentView('home');
+    setSearchQuery('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900">
+      {/* Ẩn header khi đang ở chế độ đọc */}
+      {currentView !== 'reader' && (
+        <Header 
+          onSearch={setSearchQuery} 
+          navigateTo={navigateToHome} 
+          currentView={currentView}
+        />
+      )}
+
+      {/* Routing cơ bản */}
+      {currentView === 'home' && (
+        <HomeView 
+          books={displayedBooks} 
+          onBookSelect={handleBookSelect} 
+        />
+      )}
+
+      {currentView === 'detail' && (
+        <BookDetailView 
+          book={selectedBook} 
+          onBack={navigateToHome}
+          onRead={handleReadBook}
+        />
+      )}
+
+      {currentView === 'reader' && (
+        <ReaderView 
+          book={selectedBook} 
+          onBack={() => setCurrentView('detail')} 
+        />
+      )}
+
+      {/* Footer đơn giản (ẩn trong Reader) */}
+      {currentView !== 'reader' && (
+        <footer className="bg-white border-t border-gray-200 mt-16 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <BookOpen className="h-6 w-6 text-indigo-600" />
+              <span className="ml-2 text-lg font-bold text-gray-900">EbookVN</span>
+            </div>
+            <p className="text-gray-500 text-sm">
+              &copy; 2024 EbookVN. Mọi quyền được bảo lưu.
+            </p>
+          </div>
+        </footer>
+      )}
+    </div>
+  );
+}
