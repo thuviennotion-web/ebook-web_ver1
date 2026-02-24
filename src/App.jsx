@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // --- MOCK DATA ---
-const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi"];
+const CATEGORIES = ["Tất cả", "Tiểu thuyết", "Kỹ năng sống", "Khoa học", "Lịch sử", "Thiếu nhi", "Kinh tế"];
 
 const MOCK_BOOKS = [
   {
@@ -538,7 +538,7 @@ const BookDetailView = ({ book, onBack, onRead }) => {
               className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition-all shadow-md flex justify-center items-center mb-3 active:scale-95"
             >
               <BookOpen className="h-5 w-5 mr-2" />
-              Đọc thử ngay
+              Đọc thử PDF
             </button>
             
             {/* Các nút Tải xuống */}
@@ -614,99 +614,71 @@ const DetailItem = ({ label, value }) => (
   </div>
 );
 
+// Trình xem PDF nhúng iframe
 const ReaderView = ({ book, onBack }) => {
-  const [fontSize, setFontSize] = useState(18);
-  const [theme, setTheme] = useState('light'); // light, sepia, dark
-  const [showControls, setShowControls] = useState(true);
-
   if (!book) return null;
 
-  const themes = {
-    light: 'bg-white text-gray-900',
-    sepia: 'bg-[#f4ecd8] text-[#5b4636]',
-    dark: 'bg-gray-900 text-gray-300'
+  // Hàm chuyển đổi link Google Drive từ view/open sang dạng embed (preview)
+  const getEmbedLink = (url) => {
+    if (!url) return '';
+    if (url.includes('drive.google.com')) {
+      const idMatch = url.match(/id=([^&]+)/);
+      if (idMatch && idMatch[1]) {
+        return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
+      }
+    }
+    return url;
   };
 
+  const embedUrl = getEmbedLink(book.pdfLink);
+
   return (
-    <div className={`fixed inset-0 z-50 flex flex-col transition-colors duration-300 ${themes[theme]}`}>
-      {/* Reader Header (Auto-hides) */}
-      <div className={`transform transition-transform duration-300 ${showControls ? 'translate-y-0' : '-translate-y-full'} bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between absolute top-0 left-0 right-0 z-10`}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-gray-100">
+      {/* Reader Header */}
+      <div className="bg-white shadow-[0_2px_10px_rgba(0,0,0,0.05)] border-b border-gray-200 px-4 py-3 flex items-center justify-between z-10">
         <div className="flex items-center">
           <button 
             onClick={onBack}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors mr-2"
+            className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors mr-2 flex items-center justify-center"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
           <div>
-            <h2 className="font-bold text-sm md:text-base text-gray-900 dark:text-white line-clamp-1">{book.title}</h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">{book.author}</p>
+            <h2 className="font-bold text-sm md:text-base text-gray-900 line-clamp-1">
+              {book.title} - Xem trước
+            </h2>
+            <p className="text-xs text-gray-500 hidden sm:block">{book.author}</p>
           </div>
         </div>
         
-        <div className="flex items-center space-x-2 sm:space-x-4">
-          {/* Theme controls */}
-          <div className="hidden sm:flex items-center space-x-2 mr-4 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
-            <button onClick={() => setTheme('light')} className={`w-6 h-6 rounded-md bg-white border border-gray-300 ${theme==='light' ? 'ring-2 ring-indigo-500' : ''}`}></button>
-            <button onClick={() => setTheme('sepia')} className={`w-6 h-6 rounded-md bg-[#f4ecd8] border border-[#d3c6a6] ${theme==='sepia' ? 'ring-2 ring-indigo-500' : ''}`}></button>
-            <button onClick={() => setTheme('dark')} className={`w-6 h-6 rounded-md bg-gray-900 border border-gray-600 ${theme==='dark' ? 'ring-2 ring-indigo-500' : ''}`}></button>
-          </div>
-
-          {/* Font size controls */}
-          <div className="flex items-center space-x-1 sm:space-x-2">
-            <button 
-              onClick={() => setFontSize(prev => Math.max(14, prev - 2))}
-              className="p-1.5 sm:p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium"
-            >
-              A-
-            </button>
-            <button 
-              onClick={() => setFontSize(prev => Math.min(28, prev + 2))}
-              className="p-1.5 sm:p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium text-lg"
-            >
-              A+
-            </button>
-          </div>
-          
-          <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
-            <Settings className="h-5 w-5" />
+        <div className="flex items-center">
+          <button 
+            onClick={() => window.open(book.pdfLink, '_blank')}
+            className="flex items-center px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-sm font-medium transition-colors"
+          >
+            <Download className="h-4 w-4 mr-1.5" />
+            <span className="hidden sm:inline">Mở PDF trong tab mới</span>
+            <span className="sm:hidden">Tải</span>
           </button>
         </div>
       </div>
 
-      {/* Reader Content Area */}
-      <div 
-        className="flex-1 overflow-y-auto pt-20 pb-12 px-4 sm:px-8 md:px-16 lg:px-32 scroll-smooth cursor-pointer"
-        onClick={() => setShowControls(!showControls)}
-      >
-        <div 
-          className="max-w-3xl mx-auto font-serif leading-relaxed"
-          style={{ fontSize: `${fontSize}px` }}
-        >
-          <h1 className="text-3xl md:text-5xl font-bold mb-8 text-center mt-10" style={{ fontSize: `${fontSize * 1.5}px` }}>
-            {book.title}
-          </h1>
-          <div className="text-center text-gray-500 mb-16 italic">
-            Tác giả: {book.author}
+      {/* PDF Viewer Area (iframe) */}
+      <div className="flex-1 w-full bg-gray-200 relative">
+        {embedUrl && embedUrl.includes('drive.google.com') ? (
+          <iframe 
+            src={embedUrl}
+            className="w-full h-full border-none"
+            title={`PDF Preview of ${book.title}`}
+            allow="autoplay"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full text-gray-500 px-4 text-center">
+            <BookOpen className="h-16 w-16 text-gray-300 mb-4" />
+            <p className="text-lg font-medium text-gray-700">Không có bản PDF xem trước</p>
+            <p className="text-sm mt-2">Cuốn sách này chưa được cập nhật link PDF hợp lệ.</p>
           </div>
-          
-          <div className="whitespace-pre-line text-justify">
-            {book.content}
-            <br/><br/><br/>
-            <p className="text-center italic opacity-50">-- Hết phần xem thử --</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Reader Footer (Progress) */}
-      <div className={`transform transition-transform duration-300 ${showControls ? 'translate-y-0' : 'translate-y-full'} absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-[0_-1px_3px_rgba(0,0,0,0.1)] dark:border-t dark:border-gray-700 p-3 flex items-center justify-center`}>
-        <div className="w-full max-w-md flex items-center space-x-4 text-xs text-gray-500">
-          <span>1%</span>
-          <div className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
-            <div className="h-full bg-indigo-500 w-[1%]"></div>
-          </div>
-          <span>100%</span>
-        </div>
+        )}
       </div>
     </div>
   );
