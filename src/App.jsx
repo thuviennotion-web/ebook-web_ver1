@@ -432,10 +432,23 @@ const LibraryView = ({ books, onBookSelect, onToggleWishlist }) => {
 };
 
 const BookDetailView = ({ book, onBack, onRead }) => {
-  if (!book) return null;
+  if (!book) return (
+    <div className="max-w-5xl mx-auto px-4 py-20 text-center text-gray-500">
+      Đang tải dữ liệu sách...
+    </div>
+  );
+
+  // Hàm xử lý khi nhấn vào nút tải hoặc ảnh để tối ưu Shopee Affiliate
+  const handleAffiliateClick = (e, type) => {
+    if (book.shopeeLink) {
+      // Nếu có link Shopee, mở link đó thay vì chỉ tải file
+      window.open(book.shopeeLink, '_blank');
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      {/* Nút quay lại */}
       <button 
         onClick={onBack}
         className="flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition-colors group w-max"
@@ -446,61 +459,70 @@ const BookDetailView = ({ book, onBack, onRead }) => {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="md:flex">
-          {/* Cover & Quick Actions */}
+          {/* Cột bên trái: Ảnh bìa & Nút hành động nhanh */}
           <div className="md:w-1/3 p-8 bg-gray-50 flex flex-col items-center border-r border-gray-100">
-            <div className="relative w-48 sm:w-64 aspect-[2/3] min-h-[288px] sm:min-h-[384px] rounded-lg shadow-2xl overflow-hidden mb-8 group">
+            {/* Khung ảnh bìa - Đã thêm bg-gray-200 để không bị trắng xóa khi lỗi */}
+            <div 
+              className="relative w-48 sm:w-64 aspect-[2/3] rounded-lg shadow-2xl overflow-hidden mb-8 group bg-gray-200 cursor-pointer"
+              onClick={() => handleAffiliateClick()}
+            >
               <img 
                 src={book.cover} 
                 alt={book.title} 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover block transition-transform duration-500 group-hover:scale-105"
+                // Xử lý khi link ảnh die
+                onError={(e) => {
+                  e.target.onerror = null; 
+                  e.target.src = "https://via.placeholder.com/400x600?text=Ảnh+Bìa+Lỗi";
+                }}
               />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                 <button onClick={() => onRead(book)} className="opacity-0 group-hover:opacity-100 bg-white text-gray-900 p-3 rounded-full transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-lg">
-                   <BookOpen className="h-6 w-6" />
+              {/* Overlay khi di chuột vào ảnh */}
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                 <button 
+                   onClick={(e) => { e.stopPropagation(); onRead(book); }} 
+                   className="opacity-0 group-hover:opacity-100 bg-white text-gray-900 p-4 rounded-full transform scale-75 group-hover:scale-100 transition-all duration-300 shadow-xl"
+                 >
+                   <BookOpen className="h-7 w-7 text-indigo-600" />
                  </button>
               </div>
             </div>
             
+            {/* Các nút hành động */}
             <button 
               onClick={() => onRead(book)}
-              className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition-colors shadow-md flex justify-center items-center mb-3"
+              className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-indigo-700 transition-all shadow-md flex justify-center items-center mb-3 active:scale-95"
             >
               <BookOpen className="h-5 w-5 mr-2" />
-              Đọc thử
+              Đọc thử ngay
             </button>
             
             <div className="flex w-full space-x-3">
-              <a 
-                href={book.epubLink || '#'} 
-                onClick={() => {
-                  if (book.shopeeLink) {
-                    window.open(book.shopeeLink, '_blank');
-                  }
-                }}
-                className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 transition-colors flex justify-center items-center"
+              <button 
+                onClick={(e) => handleAffiliateClick(e, 'epub')}
+                className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 hover:border-indigo-200 transition-colors flex justify-center items-center"
               >
-                <Download className="h-5 w-5 mr-1.5" />
+                <Download className="h-4 w-4 mr-1.5 text-indigo-500" />
                 EPUB
-              </a>
-              <a 
-                href={book.pdfLink || '#'} 
-                onClick={() => {
-                  if (book.shopeeLink) {
-                    window.open(book.shopeeLink, '_blank');
-                  }
-                }}
-                className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 transition-colors flex justify-center items-center"
+              </button>
+              <button 
+                onClick={(e) => handleAffiliateClick(e, 'pdf')}
+                className="flex-1 bg-white border border-gray-200 text-gray-700 font-medium py-2.5 px-4 rounded-xl hover:bg-gray-50 hover:border-indigo-200 transition-colors flex justify-center items-center"
               >
-                <Download className="h-5 w-5 mr-1.5" />
+                <Download className="h-4 w-4 mr-1.5 text-red-500" />
                 PDF
-              </a>
+              </button>
             </div>
+            {book.shopeeLink && (
+              <p className="text-[10px] text-gray-400 mt-4 text-center italic leading-tight">
+                * Nhấn vào định dạng để tải hoặc mua sách ủng hộ tác giả
+              </p>
+            )}
           </div>
 
-          {/* Book Info */}
+          {/* Cột bên phải: Thông tin chi tiết */}
           <div className="md:w-2/3 p-8 lg:p-12">
-            <div className="mb-2 flex items-center space-x-2">
-              <span className="bg-indigo-50 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wide">
+            <div className="mb-2">
+              <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                 {book.category}
               </span>
             </div>
@@ -508,37 +530,25 @@ const BookDetailView = ({ book, onBack, onRead }) => {
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 leading-tight">
               {book.title}
             </h1>
-            <p className="text-xl text-gray-600 font-medium mb-6">bởi <span className="text-indigo-600 hover:underline cursor-pointer">{book.author}</span></p>
+            <p className="text-xl text-gray-600 font-medium mb-8">
+              Tác giả: <span className="text-indigo-600 hover:underline cursor-pointer">{book.author}</span>
+            </p>
             
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-8 pb-8 border-b border-gray-100">
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">{book.publisher || 'N/A'}</span>
-                <span className="text-sm text-gray-500 mt-1">Nhà xuất bản</span>
-              </div>
-              <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">{book.distributor || 'N/A'}</span>
-                <span className="text-sm text-gray-500 mt-1">Nhà phát hành</span>
-              </div>
-              <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">{book.publishDate || 'N/A'}</span>
-                <span className="text-sm text-gray-500 mt-1">Ngày xuất bản</span>
-              </div>
-              <div className="hidden sm:block h-10 w-px bg-gray-200"></div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">{book.pages || 'N/A'}</span>
-                <span className="text-sm text-gray-500 mt-1">Số trang</span>
-              </div>
-              <div className="hidden md:block h-10 w-px bg-gray-200"></div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-gray-900">{book.coverPrice || 'N/A'}</span>
-                <span className="text-sm text-gray-500 mt-1">Giá bìa</span>
-              </div>
+            {/* Thông số chi tiết */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-8 pb-8 border-b border-gray-100">
+              <DetailItem label="Nhà xuất bản" value={book.publisher} />
+              <DetailItem label="Nhà phát hành" value={book.distributor} />
+              <DetailItem label="Ngày xuất bản" value={book.publishDate} />
+              <DetailItem label="Số trang" value={book.pages} />
+              <DetailItem label="Giá bìa" value={book.coverPrice} />
+              <DetailItem label="Đánh giá" value={`${book.rating} ⭐`} />
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Giới thiệu sách</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <div className="w-1.5 h-6 bg-indigo-600 rounded-full mr-3"></div>
+                Giới thiệu nội dung
+              </h3>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line text-lg">
                 {book.synopsis}
               </p>
@@ -549,6 +559,14 @@ const BookDetailView = ({ book, onBack, onRead }) => {
     </div>
   );
 };
+
+// Component con hiển thị từng dòng thông số cho gọn code
+const DetailItem = ({ label, value }) => (
+  <div className="flex flex-col">
+    <span className="text-sm text-gray-400 mb-1">{label}</span>
+    <span className="text-base font-bold text-gray-800">{value || '---'}</span>
+  </div>
+);
 
 const ReaderView = ({ book, onBack }) => {
   const [fontSize, setFontSize] = useState(18);
