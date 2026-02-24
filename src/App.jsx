@@ -151,7 +151,8 @@ const Header = ({ onSearch, searchQuery, navigateTo, currentView }) => {
             className="flex items-center cursor-pointer" 
             onClick={() => navigateTo('home')}
           >
-            <img src="stamp.png" alt="thuviennotion logo" className="h-12 w-12 object-contain" />
+            <img src="stamp.png" alt="thuviennotion logo" className="h-10 w-10 object-contain" />
+            <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">thuviennotion</span
           </div>
 
           {/* Desktop Search & Nav */}
